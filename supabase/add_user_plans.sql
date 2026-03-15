@@ -1,0 +1,26 @@
+-- User Plans table for subscription management
+-- Run this in your Supabase SQL Editor
+
+CREATE TABLE IF NOT EXISTS public.user_plans (
+  id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL UNIQUE,
+  plan text DEFAULT 'starter' CHECK (plan IN ('starter', 'pro', 'max')),
+  status text DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'past_due')),
+  stripe_customer_id text,
+  stripe_subscription_id text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- RLS
+ALTER TABLE public.user_plans ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own plan" ON public.user_plans
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Service role can manage plans" ON public.user_plans
+  FOR ALL USING (true);
+
+-- Index
+CREATE INDEX IF NOT EXISTS idx_user_plans_user_id ON public.user_plans(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_plans_stripe_customer ON public.user_plans(stripe_customer_id);
