@@ -23,6 +23,7 @@ const PLAN_DETAILS = [
     key: 'starter',
     name: 'Starter',
     price: 0,
+    priceLabel: 'Free',
     icon: Zap,
     color: 'text-slate-400',
     borderColor: 'border-slate-800',
@@ -39,7 +40,8 @@ const PLAN_DETAILS = [
   {
     key: 'pro',
     name: 'Pro',
-    price: 29,
+    price: 9,
+    priceLabel: '$9',
     icon: Crown,
     color: 'text-indigo-400',
     borderColor: 'border-indigo-500/50',
@@ -58,7 +60,8 @@ const PLAN_DETAILS = [
   {
     key: 'max',
     name: 'Max',
-    price: 79,
+    price: 29,
+    priceLabel: '$29',
     icon: Sparkles,
     color: 'text-emerald-400',
     borderColor: 'border-emerald-500/30',
@@ -94,30 +97,55 @@ export default function BillingPage() {
   async function handleUpgrade(plan: string) {
     setCheckoutLoading(plan)
     try {
-      const res = await fetch('/api/stripe/checkout', {
+      const res = await fetch('/api/razorpay/create-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
-      if (data.url) window.location.href = data.url
+
+      // Load Razorpay checkout
+      const script = document.createElement('script')
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      script.onload = () => {
+        const options = {
+          key: data.razorpayKeyId,
+          subscription_id: data.subscriptionId,
+          name: 'AuraRank',
+          description: data.description,
+          prefill: data.prefill,
+          theme: { color: '#6366f1' },
+          handler: async (response: { razorpay_payment_id: string; razorpay_subscription_id: string; razorpay_signature: string }) => {
+            // Verify payment
+            const verifyRes = await fetch('/api/razorpay/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...response, plan }),
+            })
+            if (verifyRes.ok) {
+              toast.success('Plan upgraded successfully!')
+              window.location.reload()
+            } else {
+              toast.error('Payment verification failed')
+            }
+          },
+          modal: {
+            ondismiss: () => setCheckoutLoading(null),
+          },
+        }
+        const rzp = new (window as any).Razorpay(options)
+        rzp.open()
+      }
+      document.body.appendChild(script)
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Failed to start checkout')
-    } finally {
       setCheckoutLoading(null)
     }
   }
 
   async function handleManage() {
-    try {
-      const res = await fetch('/api/stripe/portal', { method: 'POST' })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
-      if (data.url) window.location.href = data.url
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'Failed')
-    }
+    toast.info('To manage your subscription, please contact support at support@bolddev.live')
   }
 
   if (loading) {
@@ -169,8 +197,8 @@ export default function BillingPage() {
                   )}
                 </div>
                 <div className="mt-1">
-                  <span className="text-2xl font-bold">${plan.price}</span>
-                  <span className="text-slate-500 text-sm">/mo</span>
+                  <span className="text-2xl font-bold">{(plan as any).priceLabel || `₹${plan.price}`}</span>
+                  {plan.price > 0 && <span className="text-slate-500 text-sm">/mo</span>}
                 </div>
               </CardHeader>
 

@@ -47,7 +47,15 @@ export async function GET(request: NextRequest) {
     let promptOpportunities = null
     let recommendations = null
 
+    let totalPrompts = 0
+
     if (latestScan) {
+      const { count } = await supabase
+        .from('prompt_results')
+        .select('id', { count: 'exact', head: true })
+        .eq('scan_id', latestScan.id)
+      totalPrompts = count || 0
+
       const [compResult, oppResult, recResult] = await Promise.all([
         supabase
           .from('competitor_analysis')
@@ -76,6 +84,7 @@ export async function GET(request: NextRequest) {
       brands,
       selectedBrand,
       latestScan,
+      totalPrompts,
       scanHistory: scanHistory || [],
       competitorAnalysis: competitorAnalysis || [],
       promptOpportunities: promptOpportunities || [],

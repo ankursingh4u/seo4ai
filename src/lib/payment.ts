@@ -1,13 +1,16 @@
-import Stripe from 'stripe'
+import Razorpay from 'razorpay'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-02-25.clover',
+export const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
 })
 
 export const PLANS = {
   starter: {
     name: 'Starter',
     price: 0,
+    priceINR: 0,
+    planId: '',
     scanLimit: 1,
     brandLimit: 1,
     features: ['1 scan/month', 'Visibility score', 'Region targeting'],
@@ -15,8 +18,9 @@ export const PLANS = {
   },
   pro: {
     name: 'Pro',
-    priceId: process.env.STRIPE_PRO_PRICE_ID || '',
-    price: 29,
+    price: 9,
+    priceINR: 749,
+    planId: process.env.RAZORPAY_PRO_PLAN_ID || '',
     scanLimit: 4,
     brandLimit: 3,
     features: ['Weekly scans', 'Competitor gap scores', 'Region targeting', 'Progress history'],
@@ -24,8 +28,9 @@ export const PLANS = {
   },
   max: {
     name: 'Max',
-    priceId: process.env.STRIPE_MAX_PRICE_ID || '',
-    price: 79,
+    price: 29,
+    priceINR: 2499,
+    planId: process.env.RAZORPAY_MAX_PLAN_ID || '',
     scanLimit: 30,
     brandLimit: 10,
     features: ['Daily scans', 'Competitor scores', 'AI Fix Plan', 'Bonus tips', 'Export reports', 'Priority support'],
@@ -35,8 +40,8 @@ export const PLANS = {
 
 export type PlanType = keyof typeof PLANS
 
-export function getPlanByPriceId(priceId: string): PlanType {
-  if (priceId === PLANS.pro.priceId) return 'pro'
-  if (priceId === PLANS.max.priceId) return 'max'
+export function getPlanByRazorpayPlanId(planId: string): PlanType {
+  if (planId === PLANS.pro.planId) return 'pro'
+  if (planId === PLANS.max.planId) return 'max'
   return 'starter'
 }

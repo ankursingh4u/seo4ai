@@ -30,6 +30,7 @@ interface DashboardData {
   brands: Array<{ id: string; brand_name: string; industry: string; competitors: string[]; website: string | null; market_region?: { type: string; country?: string; state?: string; city?: string } }>
   selectedBrand: { id: string; brand_name: string; industry: string; competitors: string[]; market_region?: { type: string; country?: string; state?: string; city?: string } } | null
   latestScan: { id: string; visibility_score: number; mention_count: number; competitor_mention_count: number; scan_date: string } | null
+  totalPrompts: number
   scanHistory: Array<{ scan_date: string; visibility_score: number; mention_count: number; competitor_mention_count: number }>
   competitorAnalysis: Array<{ competitor_name: string; mention_count: number; gap_score: number }>
   promptOpportunities: Array<{ id: string; prompt: string; competitors_found: string[]; opportunity_score: number }>
@@ -47,7 +48,7 @@ export default function DashboardPage() {
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
   const [showOpportunities, setShowOpportunities] = useState(false)
   const [showFixPlan, setShowFixPlan] = useState(false)
-  const [userPlan, setUserPlan] = useState<{ plan: string; canScan: boolean; canViewCompetitors: boolean; canViewFixPlan: boolean; scansUsed: number; scanLimit: number } | null>(null)
+  const [userPlan, setUserPlan] = useState<{ plan: string; canScan: boolean; canViewCompetitors: boolean; canViewFixPlan: boolean; scansUsed: number; scanLimit: number; brandLimit: number } | null>(null)
   const [discoveringComps, setDiscoveringComps] = useState(false)
 
   // Brand form
@@ -221,7 +222,16 @@ export default function DashboardPage() {
           )}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 h-8 text-xs px-3" onClick={() => setShowAddBrand(true)}>
+          <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 h-8 text-xs px-3"
+            onClick={() => {
+              const brandCount = data?.brands?.length || 0
+              const brandLimit = userPlan?.brandLimit || 1
+              if (brandCount >= brandLimit) {
+                toast.error(`Brand limit reached (${brandCount}/${brandLimit}). Upgrade your plan for more brands.`)
+                return
+              }
+              setShowAddBrand(true)
+            }}>
             <Plus className="h-3 w-3 mr-1" /> Brand
           </Button>
           <Button className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs px-4"
@@ -257,102 +267,133 @@ export default function DashboardPage() {
       {/* Score cards */}
       {scan && (
         <>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <Card className={`border ${scoreBg(scan.visibility_score)}`}>
-              <CardContent className="pt-3 pb-3 text-center">
-                <Eye className="h-4 w-4 text-indigo-400 mx-auto mb-1" />
-                <p className="text-[10px] text-slate-400 uppercase tracking-wide">Visibility</p>
-                <p className={`text-3xl font-bold ${scoreColor(scan.visibility_score)}`}>{scan.visibility_score}</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-slate-900/50 border-slate-800">
-              <CardContent className="pt-3 pb-3 text-center">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wide">Mentions</p>
-                <p className="text-3xl font-bold text-white">{scan.mention_count}</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-slate-900/50 border-slate-800">
-              <CardContent className="pt-3 pb-3 text-center">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wide">Competitors</p>
-                <p className="text-3xl font-bold text-amber-400">{scan.competitor_mention_count}</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-slate-900/50 border-slate-800">
-              <CardContent className="pt-3 pb-3 text-center">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wide">Opportunities</p>
-                <p className="text-3xl font-bold text-emerald-400">{data?.promptOpportunities?.length || 0}</p>
-              </CardContent>
-            </Card>
-          </div>
+          {(() => {
+            const total = data?.totalPrompts || 1
+            const oppCount = data?.promptOpportunities?.length || 0
+            const gap = scan.competitor_mention_count - scan.mention_count
+            return (
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 animate-in fade-in duration-500">
+                {/* Card 1: Visibility Score */}
+                <Card className={`border ${scoreBg(scan.visibility_score)}`}>
+                  <CardContent className="pt-4 pb-4 text-center">
+                    <p className={`text-3xl font-bold ${scoreColor(scan.visibility_score)}`}>{scan.visibility_score}<span className="text-base text-slate-500">/100</span></p>
+                    <p className="text-xs text-slate-400 mt-1 font-medium">AI Visibility Score</p>
+                    <p className="text-[10px] text-slate-600 mt-0.5">{scan.visibility_score >= 60 ? 'AI recommends you often' : scan.visibility_score >= 30 ? 'Room to improve' : 'AI rarely mentions you'}</p>
+                  </CardContent>
+                </Card>
+
+                {/* Card 2: Your Brand - how many prompts mentioned you */}
+                <Card className="bg-slate-900/50 border-slate-800">
+                  <CardContent className="pt-4 pb-4 text-center">
+                    <p className="text-3xl font-bold text-white">{scan.mention_count}<span className="text-base text-slate-500">/{total}</span></p>
+                    <p className="text-xs text-slate-400 mt-1 font-medium">Your Brand Mentioned</p>
+                    <p className="text-[10px] text-slate-600 mt-0.5">Out of {total} AI prompts tested</p>
+                  </CardContent>
+                </Card>
+
+                {/* Card 3: Competitor Gap - simple and clear */}
+                <Card className="bg-slate-900/50 border-slate-800">
+                  <CardContent className="pt-4 pb-4 text-center">
+                    <p className={`text-3xl font-bold ${gap > 0 ? 'text-red-400' : 'text-emerald-400'}`}>{gap > 0 ? '+' : ''}{gap}</p>
+                    <p className="text-xs text-slate-400 mt-1 font-medium">Competitor Gap</p>
+                    <p className="text-[10px] text-slate-600 mt-0.5">{gap > 0 ? 'Competitors lead by ' + gap + ' mentions' : gap === 0 ? 'Tied with competitors' : 'You lead by ' + Math.abs(gap) + ' mentions'}</p>
+                  </CardContent>
+                </Card>
+
+                {/* Card 4: Opportunities */}
+                <Card className="bg-slate-900/50 border-slate-800">
+                  <CardContent className="pt-4 pb-4 text-center">
+                    <p className="text-3xl font-bold text-emerald-400">{oppCount}</p>
+                    <p className="text-xs text-slate-400 mt-1 font-medium">Quick Wins</p>
+                    <p className="text-[10px] text-slate-600 mt-0.5">{oppCount > 0 ? 'Prompts where you can show up' : 'No gaps found!'}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            )
+          })()}
 
           {/* Charts */}
-          <div className="grid lg:grid-cols-2 gap-4">
-            {data?.competitorAnalysis && data.competitorAnalysis.length > 0 && (
-              <Card className="bg-slate-900/50 border-slate-800">
-                <CardHeader className="pb-2 pt-4">
-                  <CardTitle className="text-xs text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
-                    <Target className="h-3.5 w-3.5 text-indigo-400" /> Competitor Comparison
-                    {userPlan && !userPlan.canViewCompetitors && (
-                      <Badge className="bg-amber-500/20 text-amber-400 text-[9px] ml-auto">Pro+</Badge>
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pb-3">
-                  {userPlan && !userPlan.canViewCompetitors ? (
-                    <div className="text-center py-6">
-                      <p className="text-xs text-slate-400 mb-2">Upgrade to Pro to see detailed competitor scores</p>
-                      <Button className="bg-indigo-600 hover:bg-indigo-700 h-7 text-xs px-3" onClick={() => window.location.href = '/dashboard/billing'}>
-                        Upgrade Plan
+          {/* Charts - use dynamic grid: 2 cols if both visible, 1 col if only one */}
+          {(() => {
+            const showChart = data?.competitorAnalysis && data.competitorAnalysis.length > 0 && userPlan?.canViewCompetitors
+            const showTrend = data?.scanHistory && data.scanHistory.length > 1
+            const showLocked = data?.competitorAnalysis && data.competitorAnalysis.length > 0 && userPlan && !userPlan.canViewCompetitors
+            const cols = (showChart && showTrend) ? 'lg:grid-cols-2' : ''
+            return (
+              <div className={`grid ${cols} gap-4 slide-up stagger-2`}>
+                {/* Competitor chart or upgrade prompt */}
+                {showChart && (
+                  <Card className="bg-slate-900/50 border-slate-800">
+                    <CardHeader className="pb-2 pt-4">
+                      <CardTitle className="text-xs text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
+                        <Target className="h-3.5 w-3.5 text-indigo-400" /> Competitor Comparison
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pb-3">
+                      <ResponsiveContainer width="100%" height={180}>
+                        <BarChart data={[
+                          { name: brand?.brand_name || 'You', mentions: scan.mention_count, fill: '#6366f1' },
+                          ...data!.competitorAnalysis.map(c => ({ name: c.competitor_name, mentions: c.mention_count, fill: '#475569' })),
+                        ]}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                          <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                          <YAxis tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                          <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff', fontSize: 11 }} />
+                          <Bar dataKey="mentions" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {showLocked && (
+                  <Card className="bg-slate-900/50 border-slate-800 border-dashed">
+                    <CardContent className="py-6 flex items-center justify-center gap-3">
+                      <Target className="h-5 w-5 text-slate-600 shrink-0" />
+                      <div>
+                        <p className="text-sm text-slate-400">Competitor comparison chart</p>
+                        <p className="text-[10px] text-slate-600">See who AI recommends instead of you</p>
+                      </div>
+                      <Button className="bg-indigo-600 hover:bg-indigo-700 h-7 text-xs px-3 shrink-0 ml-auto" onClick={() => window.location.href = '/dashboard/billing'}>
+                        Upgrade
                       </Button>
-                    </div>
-                  ) : (
-                  <ResponsiveContainer width="100%" height={180}>
-                    <BarChart data={[
-                      { name: brand?.brand_name || 'You', mentions: scan.mention_count, fill: '#6366f1' },
-                      ...data.competitorAnalysis.map(c => ({ name: c.competitor_name, mentions: c.mention_count, fill: '#475569' })),
-                    ]}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                      <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                      <YAxis tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff', fontSize: 11 }} />
-                      <Bar dataKey="mentions" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-            {data?.scanHistory && data.scanHistory.length > 1 && (
-              <Card className="bg-slate-900/50 border-slate-800">
-                <CardHeader className="pb-2 pt-4">
-                  <CardTitle className="text-xs text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-emerald-400" /> Visibility Trend
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pb-3">
-                  <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={data.scanHistory.map(s => ({ date: format(new Date(s.scan_date), 'MMM d'), score: s.visibility_score }))}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                      <XAxis dataKey="date" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                      <YAxis domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff', fontSize: 11 }} />
-                      <Line type="monotone" dataKey="score" stroke="#6366f1" strokeWidth={2} dot={{ fill: '#6366f1', r: 3 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {showTrend && (
+                  <Card className="bg-slate-900/50 border-slate-800">
+                    <CardHeader className="pb-2 pt-4">
+                      <CardTitle className="text-xs text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
+                        <TrendingUp className="h-3.5 w-3.5 text-emerald-400" /> Visibility Trend
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pb-3">
+                      <ResponsiveContainer width="100%" height={180}>
+                        <LineChart data={data!.scanHistory.map(s => ({ date: format(new Date(s.scan_date), 'MMM d'), score: s.visibility_score }))}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                          <XAxis dataKey="date" tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                          <YAxis domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                          <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff', fontSize: 11 }} />
+                          <Line type="monotone" dataKey="score" stroke="#6366f1" strokeWidth={2} dot={{ fill: '#6366f1', r: 3 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )
+          })()}
 
           {/* Opportunities (collapsible) */}
           {data?.promptOpportunities && data.promptOpportunities.length > 0 && (
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-slate-900/50 border-slate-800 slide-up stagger-3">
               <button className="w-full text-left" onClick={() => setShowOpportunities(!showOpportunities)}>
                 <CardHeader className="py-3">
                   <CardTitle className="text-xs text-slate-400 uppercase tracking-wide flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
                       <Target className="h-3.5 w-3.5 text-amber-400" />
-                      Missed Opportunities ({data.promptOpportunities.length})
+                      Where You&apos;re Missing ({data.promptOpportunities.length})
                     </span>
                     {showOpportunities ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
                   </CardTitle>
@@ -360,17 +401,11 @@ export default function DashboardPage() {
               </button>
               {showOpportunities && (
                 <CardContent className="pt-0 pb-3 space-y-2">
+                  <p className="text-[10px] text-slate-600 mb-2">When people ask AI these questions, your competitors show up but you don&apos;t.</p>
                   {data.promptOpportunities.map(opp => (
-                    <div key={opp.id} className="flex items-start justify-between gap-2 p-2.5 bg-slate-800/30 rounded-lg">
-                      <div>
-                        <p className="text-xs text-white">&ldquo;{opp.prompt}&rdquo;</p>
-                        <div className="flex gap-1 mt-1">
-                          {opp.competitors_found.map((c, i) => (
-                            <Badge key={i} className="bg-red-500/10 text-red-400 border-red-500/20 text-[9px] px-1.5 py-0">{c}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                      <Badge variant="outline" className="border-amber-500/30 text-amber-400 text-[9px] shrink-0">{opp.opportunity_score}</Badge>
+                    <div key={opp.id} className="p-2.5 bg-slate-800/30 rounded-lg">
+                      <p className="text-sm text-white mb-1.5">When someone asks: <span className="text-indigo-400">&ldquo;{opp.prompt}&rdquo;</span></p>
+                      <p className="text-xs text-slate-500">AI recommends <span className="text-red-400 font-medium">{opp.competitors_found.join(', ')}</span> but <span className="text-amber-400 font-medium">not you</span></p>
                     </div>
                   ))}
                 </CardContent>
@@ -402,7 +437,7 @@ export default function DashboardPage() {
                     <p className="text-sm font-medium text-white mb-1">Unlock AI Fix Plan</p>
                     <p className="text-xs text-slate-400 mb-3">Upgrade to Max to get personalized recommendations on how to improve your AI visibility, plus bonus optimization tips.</p>
                     <Button className="bg-emerald-600 hover:bg-emerald-700 h-8 text-xs px-4" onClick={() => window.location.href = '/dashboard/billing'}>
-                      Upgrade to Max — $79/mo
+                      Upgrade to Max
                     </Button>
                   </div>
                 ) : !data?.recommendations?.length ? (
@@ -434,38 +469,42 @@ export default function DashboardPage() {
             )}
           </Card>
 
-          <div className="text-center space-y-2">
-            <p className="text-[10px] text-slate-600">
-              Last scan: {format(new Date(scan.scan_date), 'MMM d, yyyy HH:mm')}
-            </p>
-            <div className="flex items-center justify-center gap-2">
-              <Button
-                variant="outline"
-                className="border-slate-700 text-slate-400 hover:bg-slate-800 h-7 text-[10px] px-2.5 gap-1"
-                onClick={() => {
-                  const shareUrl = `${window.location.origin}/report/${btoa(scan.id)}`
-                  navigator.clipboard.writeText(shareUrl)
-                  toast.success('Share link copied to clipboard!')
-                }}
-              >
-                <LinkIcon className="h-3 w-3" /> Copy Link
-              </Button>
-              <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My brand scored ${scan.visibility_score}/100 on AI visibility! Check yours at aurarank.io`)}&url=${encodeURIComponent(`${window.location.origin}/report/${btoa(scan.id)}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center border border-slate-700 text-slate-400 hover:bg-slate-800 h-7 text-[10px] px-2.5 gap-1 rounded-md transition-colors"
-              >
-                <Twitter className="h-3 w-3" /> Tweet
-              </a>
-              <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${window.location.origin}/report/${btoa(scan.id)}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center border border-slate-700 text-slate-400 hover:bg-slate-800 h-7 text-[10px] px-2.5 gap-1 rounded-md transition-colors"
-              >
-                <Share2 className="h-3 w-3" /> LinkedIn
-              </a>
+          {/* Footer with share + scan info */}
+          <div className="border-t border-slate-800 pt-4 mt-2 slide-up stagger-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <p className="text-[11px] text-slate-600">
+                Last scan: {format(new Date(scan.scan_date), 'MMM d, yyyy HH:mm')} &middot; {data?.totalPrompts || 0} prompts tested
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-600 mr-1">Share:</span>
+                <Button
+                  variant="outline"
+                  className="border-slate-800 text-slate-500 hover:text-white hover:bg-slate-800 h-7 text-[10px] px-2.5 gap-1"
+                  onClick={() => {
+                    const shareUrl = `${window.location.origin}/report/${btoa(scan.id)}`
+                    navigator.clipboard.writeText(shareUrl)
+                    toast.success('Link copied!')
+                  }}
+                >
+                  <LinkIcon className="h-3 w-3" /> Link
+                </Button>
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My brand scored ${scan.visibility_score}/100 on AI visibility! Check yours:`)}&url=${encodeURIComponent(`${window.location.origin}/report/${btoa(scan.id)}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center border border-slate-800 text-slate-500 hover:text-white hover:bg-slate-800 h-7 text-[10px] px-2.5 gap-1 rounded-md transition-colors"
+                >
+                  <Twitter className="h-3 w-3" /> Tweet
+                </a>
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${window.location.origin}/report/${btoa(scan.id)}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center border border-slate-800 text-slate-500 hover:text-white hover:bg-slate-800 h-7 text-[10px] px-2.5 gap-1 rounded-md transition-colors"
+                >
+                  <Share2 className="h-3 w-3" /> LinkedIn
+                </a>
+              </div>
             </div>
           </div>
         </>

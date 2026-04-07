@@ -238,92 +238,80 @@ export default function LandingPage() {
             <p className="text-slate-400">Start free, upgrade when you need more</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {/* Free */}
-            <Card className="bg-slate-900/50 border-slate-800">
-              <CardHeader>
-                <CardTitle className="text-lg">Starter</CardTitle>
-                <div className="mt-2">
-                  <span className="text-3xl font-bold">$0</span>
-                  <span className="text-slate-500">/month</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-sm text-slate-400 mb-6">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> 1 brand</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> 1 scan per month</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> AI Visibility Score</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> Region targeting</li>
-                  <li className="flex items-center gap-2"><XIcon className="h-4 w-4 text-slate-600" /> <span className="text-slate-600">Competitor scores</span></li>
-                  <li className="flex items-center gap-2"><XIcon className="h-4 w-4 text-slate-600" /> <span className="text-slate-600">Fix Plan</span></li>
-                </ul>
-                <Link href="/signup" className="block">
-                  <Button variant="outline" className="w-full border-slate-700 text-slate-300 hover:bg-slate-800">
-                    Get Started Free
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            {/* Pro */}
-            <Card className="bg-slate-900/50 border-indigo-500/50 ring-1 ring-indigo-500/20 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <Badge className="bg-indigo-600 text-white border-0">Most Popular</Badge>
-              </div>
-              <CardHeader>
-                <CardTitle className="text-lg">Pro</CardTitle>
-                <div className="mt-2">
-                  <span className="text-3xl font-bold">$29</span>
-                  <span className="text-slate-500">/month</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-sm text-slate-400 mb-6">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> 3 brands</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> Weekly scans</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> AI Visibility Score</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> <span className="text-white font-medium">Competitor gap scores</span></li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> Region targeting</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> Progress history</li>
-                  <li className="flex items-center gap-2"><XIcon className="h-4 w-4 text-slate-600" /> <span className="text-slate-600">Fix Plan</span></li>
-                </ul>
-                <Link href="/signup" className="block">
-                  <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                    Get Started
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            {/* Max */}
-            <Card className="bg-slate-900/50 border-emerald-500/30 ring-1 ring-emerald-500/10 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <Badge className="bg-emerald-600 text-white border-0">Best Value</Badge>
-              </div>
-              <CardHeader>
-                <CardTitle className="text-lg">Max</CardTitle>
-                <div className="mt-2">
-                  <span className="text-3xl font-bold">$79</span>
-                  <span className="text-slate-500">/month</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-sm text-slate-400 mb-6">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> 10 brands</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> Daily scans</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> Competitor gap scores</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> <span className="text-white font-medium">AI Fix Plan</span> — how to improve</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> <span className="text-white font-medium">Bonus tips</span> — content ideas, SEO actions</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> Export reports</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> Priority support</li>
-                </ul>
-                <Link href="/signup" className="block">
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
-                    Get Started
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto items-stretch">
+            {[
+              {
+                name: 'Starter', price: 'Free', priceSuffix: 'forever',
+                border: 'border-slate-800', btn: 'outline' as const, btnClass: 'border-slate-700 text-slate-300 hover:bg-slate-800', btnText: 'Get Started Free',
+                features: [
+                  { text: '1 brand', on: true },
+                  { text: '1 scan per month', on: true },
+                  { text: 'AI Visibility Score', on: true },
+                  { text: 'Region targeting', on: true },
+                  { text: 'Competitor scores', on: false },
+                  { text: 'AI Fix Plan', on: false },
+                  { text: 'Bonus tips', on: false },
+                ],
+              },
+              {
+                name: 'Pro', price: '$9', priceSuffix: '/month', badge: 'Most Popular', badgeClass: 'bg-indigo-600',
+                border: 'border-indigo-500/50 ring-1 ring-indigo-500/20', btn: 'default' as const, btnClass: 'bg-indigo-600 hover:bg-indigo-700 text-white', btnText: 'Get Started',
+                features: [
+                  { text: '3 brands', on: true },
+                  { text: 'Weekly scans (4/mo)', on: true },
+                  { text: 'AI Visibility Score', on: true },
+                  { text: 'Competitor gap scores', on: true, highlight: true },
+                  { text: 'Region targeting', on: true },
+                  { text: 'Progress history', on: true },
+                  { text: 'AI Fix Plan', on: false },
+                ],
+              },
+              {
+                name: 'Max', price: '$29', priceSuffix: '/month', badge: 'Best Value', badgeClass: 'bg-emerald-600',
+                border: 'border-emerald-500/30 ring-1 ring-emerald-500/10', btn: 'default' as const, btnClass: 'bg-emerald-600 hover:bg-emerald-700 text-white', btnText: 'Get Started',
+                features: [
+                  { text: '10 brands', on: true },
+                  { text: 'Daily scans (30/mo)', on: true },
+                  { text: 'Competitor gap scores', on: true },
+                  { text: 'AI Fix Plan', on: true, highlight: true },
+                  { text: 'Bonus optimization tips', on: true, highlight: true },
+                  { text: 'Export reports', on: true },
+                  { text: 'Priority support', on: true },
+                ],
+              },
+            ].map((plan) => (
+              <Card key={plan.name} className={`bg-slate-900/50 ${plan.border} flex flex-col`}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{plan.name}</CardTitle>
+                    {plan.badge && (
+                      <Badge className={`${plan.badgeClass} text-white border-0 text-xs`}>{plan.badge}</Badge>
+                    )}
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-3xl font-bold">{plan.price}</span>
+                    <span className="text-slate-500"> {plan.priceSuffix}</span>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex flex-col flex-1">
+                  <ul className="space-y-3 text-sm text-slate-400 flex-1 mb-6">
+                    {plan.features.map((f, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        {f.on
+                          ? <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+                          : <XIcon className="h-4 w-4 text-slate-600 shrink-0" />}
+                        <span className={f.on ? ('highlight' in f && f.highlight ? 'text-white font-medium' : 'text-slate-300') : 'text-slate-600'}>{f.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/signup" className="block mt-auto">
+                    <Button variant={plan.btn} className={`w-full ${plan.btnClass}`}>
+                      {plan.btnText}
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

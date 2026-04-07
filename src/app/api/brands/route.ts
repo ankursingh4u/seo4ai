@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     let result = await supabase.from('brands').insert(insertData).select().single()
 
     // If market_region column doesn't exist, retry without it
-    if (result.error?.code === '42703') {
+    if (result.error && (result.error.code === '42703' || result.error.message?.includes('market_region'))) {
       delete insertData.market_region
       result = await supabase.from('brands').insert(insertData).select().single()
     }
