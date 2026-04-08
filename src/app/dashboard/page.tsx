@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import {
   Eye, Scan, Target, Lightbulb, Plus, Loader2, X, TrendingUp,
   MapPin, Globe, ChevronDown, ChevronRight, CheckCircle2, Circle, Sparkles,
-  Share2, Link as LinkIcon, Twitter
+  Share2, Link as LinkIcon, Twitter, Trash2
 } from 'lucide-react'
 
 const INDUSTRIES = [
@@ -173,6 +173,17 @@ export default function DashboardPage() {
     if (c && competitors.length < 3 && !competitors.includes(c)) { setCompetitors([...competitors, c]); setCompInput('') }
   }
 
+  async function handleDeleteBrand(brandId: string) {
+    if (!confirm('Delete this brand and all its scan data? This cannot be undone.')) return
+    try {
+      const res = await fetch(`/api/brands/${brandId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Failed to delete brand')
+      toast.success('Brand deleted')
+      setSelectedBrandId(null)
+      fetchDashboard()
+    } catch { toast.error('Failed to delete brand') }
+  }
+
   const scoreColor = (s: number) => s >= 60 ? 'text-emerald-400' : s >= 30 ? 'text-amber-400' : 'text-red-400'
   const scoreBg = (s: number) => s >= 60 ? 'bg-emerald-500/10 border-emerald-500/20' : s >= 30 ? 'bg-amber-500/10 border-amber-500/20' : 'bg-red-500/10 border-red-500/20'
   const prioColor = (p: string) => p === 'high' ? 'bg-red-500/20 text-red-400' : p === 'medium' ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'
@@ -209,6 +220,15 @@ export default function DashboardPage() {
           ) : brand ? (
             <h1 className="text-lg font-bold">{brand.brand_name}</h1>
           ) : null}
+          {brand && (
+            <button
+              onClick={() => handleDeleteBrand(brand.id)}
+              className="p-1.5 rounded-md text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+              title="Delete brand"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
           {region && region.type !== 'global' && (
             <Badge variant="outline" className="border-indigo-500/30 text-indigo-400 gap-1 text-xs">
               <MapPin className="h-3 w-3" />
