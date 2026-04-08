@@ -1,4 +1,4 @@
-import { openai } from '@/lib/openai'
+import { getOpenAI } from '@/lib/openai'
 import { analyzeMentions } from '@/lib/analyzer'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
 
     const results = await Promise.allSettled(
       prompts.map(async (prompt) => {
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
           model: 'gpt-4o-mini',
           messages: [{ role: 'user', content: prompt }],
           max_tokens: 300, // Reduced from 500

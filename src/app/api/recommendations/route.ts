@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { openai } from '@/lib/openai'
+import { getOpenAI } from '@/lib/openai'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -100,7 +100,7 @@ Format each recommendation as JSON objects in an array. Return ONLY the JSON arr
 Example format:
 [{"title":"...","description":"...","category":"content","priority":"high","impact_score":85,"difficulty":"medium"}]`
 
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: aiPrompt }],
       max_tokens: 2000,

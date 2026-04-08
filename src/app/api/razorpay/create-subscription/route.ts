@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { razorpay, PLANS } from '@/lib/payment'
+import { getRazorpay, PLANS } from '@/lib/payment'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create a Razorpay subscription
-    const subscription = await razorpay.subscriptions.create({
+    const subscription = await getRazorpay().subscriptions.create({
       plan_id: planConfig.planId,
       total_count: 12, // 12 months billing cycle
       quantity: 1,

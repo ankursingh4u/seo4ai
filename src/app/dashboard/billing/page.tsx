@@ -134,6 +134,7 @@ export default function BillingPage() {
             ondismiss: () => setCheckoutLoading(null),
           },
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const rzp = new (window as any).Razorpay(options)
         rzp.open()
       }
@@ -197,6 +198,7 @@ export default function BillingPage() {
                   )}
                 </div>
                 <div className="mt-1">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   <span className="text-2xl font-bold">{(plan as any).priceLabel || `₹${plan.price}`}</span>
                   {plan.price > 0 && <span className="text-slate-500 text-sm">/mo</span>}
                 </div>

@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { openai } from '@/lib/openai'
+import { getOpenAI } from '@/lib/openai'
 import { generatePrompts } from '@/lib/prompts'
 import { analyzeMentions, calculateVisibilityScore, analyzeCompetitorGaps, findPromptOpportunities } from '@/lib/analyzer'
 import { sendEmail, scanCompleteEmail } from '@/lib/email'
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 120
 
 async function queryAI(prompt: string): Promise<string> {
-  const completion = await openai.chat.completions.create({
+  const completion = await getOpenAI().chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
       {

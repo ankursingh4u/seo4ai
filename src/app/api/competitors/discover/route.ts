@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { openai } from '@/lib/openai'
+import { getOpenAI } from '@/lib/openai'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const regionClause = region ? ` in ${region}` : ''
     const prompt = `What are the top 5 most well-known ${industry} brands/companies${regionClause}? Return only the names as a JSON array.`
 
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 200,
