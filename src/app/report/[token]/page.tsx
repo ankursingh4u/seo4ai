@@ -8,12 +8,24 @@ function ScoreCircle({ score }: { score: number }) {
   const color = score >= 60 ? 'text-emerald-400' : score >= 30 ? 'text-amber-400' : 'text-red-400'
   const borderColor = score >= 60 ? 'border-emerald-500/30' : score >= 30 ? 'border-amber-500/30' : 'border-red-500/30'
   const bgColor = score >= 60 ? 'bg-emerald-500/10' : score >= 30 ? 'bg-amber-500/10' : 'bg-red-500/10'
-  const label = score >= 60 ? 'Strong' : score >= 30 ? 'Moderate' : 'Low'
+  const label = score >= 60 ? 'Strong Visibility' : score >= 30 ? 'Moderate Visibility' : 'Low Visibility'
 
   return (
     <div className={`inline-flex flex-col items-center justify-center w-40 h-40 rounded-full border-4 ${borderColor} ${bgColor}`}>
       <span className={`text-5xl font-bold ${color}`}>{score}</span>
-      <span className="text-xs text-slate-400 mt-1">{label} Visibility</span>
+      <span className="text-xs text-slate-400 mt-1 text-center px-3">{label}</span>
+    </div>
+  )
+}
+
+function ScoreBar({ value, max, color }: { value: number; max: number; color: string }) {
+  const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex-1 bg-slate-800 rounded-full h-2">
+        <div className={`${color} h-2 rounded-full transition-all`} style={{ width: `${pct}%` }} />
+      </div>
+      <span className="text-sm text-slate-300 w-6 text-right font-mono">{value}</span>
     </div>
   )
 }
@@ -21,7 +33,6 @@ function ScoreCircle({ score }: { score: number }) {
 export default async function PublicReportPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params
 
-  // Decode the base64url token to get scanId
   let scanId: string
   try {
     scanId = Buffer.from(token, 'base64url').toString('utf-8')
@@ -31,7 +42,6 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
 
   if (!scanId) notFound()
 
-  // Use service role client to fetch data (public page, no auth)
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -43,7 +53,6 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
     }
   )
 
-  // Fetch scan with brand info
   const { data: scan } = await supabase
     .from('scans')
     .select('id, visibility_score, mention_count, competitor_mention_count, scan_date, brand_id')
@@ -53,7 +62,6 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
 
   if (!scan) notFound()
 
-  // Fetch brand info
   const { data: brand } = await supabase
     .from('brands')
     .select('brand_name, industry')
@@ -62,24 +70,36 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
 
   if (!brand) notFound()
 
-  // Fetch competitor analysis
   const { data: competitors } = await supabase
     .from('competitor_analysis')
     .select('competitor_name, mention_count, gap_score')
     .eq('scan_id', scanId)
     .order('mention_count', { ascending: false })
 
-  // Fetch opportunity count
+  const { count: totalPrompts } = await supabase
+    .from('prompt_results')
+    .select('id', { count: 'exact', head: true })
+    .eq('scan_id', scanId)
+
   const { count: opportunityCount } = await supabase
     .from('prompt_opportunities')
     .select('id', { count: 'exact', head: true })
     .eq('scan_id', scanId)
 
   const scanDate = new Date(scan.scan_date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    year: 'numeric', month: 'long', day: 'numeric',
   })
+
+  const total = totalPrompts || 1
+  const mentionRate = Math.round((scan.mention_count / total) * 100)
+  const topComp = competitors?.[0]
+  const compStatus = topComp
+    ? scan.mention_count > topComp.mention_count ? 'winning'
+      : scan.mention_count === topComp.mention_count ? 'tied'
+      : 'behind'
+    : null
+
+  const maxMentions = Math.max(scan.mention_count, ...(competitors || []).map(c => c.mention_count), 1)
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -96,93 +116,140 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-1">{brand.brand_name}</h1>
           <p className="text-slate-400 text-sm">{brand.industry}</p>
-          <p className="text-slate-600 text-xs mt-2">Scanned on {scanDate}</p>
+          <p className="text-slate-600 text-xs mt-2">Scanned on {scanDate} &middot; {total} AI questions tested</p>
         </div>
 
         {/* Score */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-6">
           <ScoreCircle score={scan.visibility_score} />
-          <div className="flex justify-center gap-8 mt-6 text-sm">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-white">{scan.mention_count}</p>
-              <p className="text-slate-500 text-xs">AI Mentions</p>
+        </div>
+
+        {/* Plain-language summary */}
+        <div className={`rounded-xl border p-5 mb-8 text-center ${
+          scan.visibility_score >= 60 ? 'bg-emerald-500/5 border-emerald-500/20' :
+          scan.visibility_score >= 30 ? 'bg-amber-500/5 border-amber-500/20' :
+          'bg-red-500/5 border-red-500/20'
+        }`}>
+          <p className="text-base font-semibold text-white mb-2">
+            {scan.visibility_score >= 60
+              ? `AI actively recommends ${brand.brand_name}`
+              : scan.visibility_score >= 30
+              ? `AI sometimes mentions ${brand.brand_name}`
+              : `AI rarely mentions ${brand.brand_name}`}
+          </p>
+          <p className="text-sm text-slate-400">
+            {scan.mention_count === 0
+              ? `Out of ${total} customer-style questions tested, ${brand.brand_name} was not mentioned once. Customers searching AI are being sent to competitors.`
+              : scan.mention_count === total
+              ? `${brand.brand_name} appeared in all ${total} AI responses tested. Excellent visibility!`
+              : `${brand.brand_name} appeared in ${scan.mention_count} out of ${total} AI responses. ${total - scan.mention_count} potential customers didn't hear about you.`}
+          </p>
+        </div>
+
+        {/* Key numbers */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-white">{mentionRate}%</p>
+            <p className="text-xs text-slate-500 mt-1">Mention Rate</p>
+            <p className="text-[10px] text-slate-600 mt-0.5">How often AI includes you</p>
+          </div>
+          {compStatus && topComp ? (
+            <div className={`border rounded-xl p-4 text-center ${
+              compStatus === 'winning' ? 'bg-emerald-500/5 border-emerald-500/20' :
+              compStatus === 'tied' ? 'bg-amber-500/5 border-amber-500/20' :
+              'bg-red-500/5 border-red-500/20'
+            }`}>
+              <p className={`text-2xl font-bold ${
+                compStatus === 'winning' ? 'text-emerald-400' :
+                compStatus === 'tied' ? 'text-amber-400' : 'text-red-400'
+              }`}>
+                {compStatus === 'winning' ? 'Winning' : compStatus === 'tied' ? 'Tied' : 'Behind'}
+              </p>
+              <p className="text-xs text-slate-500 mt-1">vs Competitors</p>
+              <p className="text-[10px] text-slate-600 mt-0.5">vs {topComp.competitor_name}</p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-amber-400">{scan.competitor_mention_count}</p>
-              <p className="text-slate-500 text-xs">Competitor Mentions</p>
+          ) : (
+            <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
+              <p className="text-2xl font-bold text-amber-400">{opportunityCount || 0}</p>
+              <p className="text-xs text-slate-500 mt-1">Opportunities</p>
+              <p className="text-[10px] text-slate-600 mt-0.5">Searches you&apos;re missing</p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-emerald-400">{opportunityCount || 0}</p>
-              <p className="text-slate-500 text-xs">Opportunities</p>
-            </div>
+          )}
+          <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-amber-400">{opportunityCount || 0}</p>
+            <p className="text-xs text-slate-500 mt-1">Missed Searches</p>
+            <p className="text-[10px] text-slate-600 mt-0.5">Where rivals win</p>
           </div>
         </div>
 
         {/* Competitor Comparison */}
         {competitors && competitors.length > 0 && (
           <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-8">
-            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4">Competitor Comparison</h2>
-            <div className="space-y-3">
-              {/* Brand's own mentions */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                  <span className="text-sm font-medium text-white">{brand.brand_name}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-32 bg-slate-800 rounded-full h-2">
-                    <div
-                      className="bg-indigo-500 h-2 rounded-full"
-                      style={{ width: `${Math.min(100, (scan.mention_count / Math.max(scan.mention_count, scan.competitor_mention_count, 1)) * 100)}%` }}
-                    />
-                  </div>
-                  <span className="text-xs text-slate-400 w-8 text-right">{scan.mention_count}</span>
-                </div>
-              </div>
-              {/* Competitors */}
-              {competitors.map((comp) => (
-                <div key={comp.competitor_name} className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-white mb-1">Head-to-Head: AI Mentions</h2>
+            <p className="text-xs text-slate-500 mb-5">How many AI responses mentioned each brand out of {total} questions tested</p>
+            <div className="space-y-4">
+              {/* Brand row */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-slate-600" />
-                    <span className="text-sm text-slate-300">{comp.competitor_name}</span>
+                    <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                    <span className="text-sm font-semibold text-white">{brand.brand_name} (You)</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-32 bg-slate-800 rounded-full h-2">
-                      <div
-                        className="bg-slate-600 h-2 rounded-full"
-                        style={{ width: `${Math.min(100, (comp.mention_count / Math.max(scan.mention_count, scan.competitor_mention_count, 1)) * 100)}%` }}
-                      />
+                  <span className="text-xs text-slate-400">{scan.mention_count}/{total} responses</span>
+                </div>
+                <ScoreBar value={scan.mention_count} max={maxMentions} color="bg-indigo-500" />
+              </div>
+              {competitors.map((comp) => (
+                <div key={comp.competitor_name}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-slate-500" />
+                      <span className="text-sm text-slate-300">{comp.competitor_name}</span>
                     </div>
-                    <span className="text-xs text-slate-400 w-8 text-right">{comp.mention_count}</span>
+                    <span className="text-xs text-slate-400">{comp.mention_count}/{total} responses</span>
                   </div>
+                  <ScoreBar value={comp.mention_count} max={maxMentions} color={
+                    comp.mention_count > scan.mention_count ? 'bg-red-500/70' : 'bg-slate-600'
+                  } />
                 </div>
               ))}
             </div>
+            {compStatus === 'behind' && topComp && (
+              <p className="text-xs text-red-400/80 mt-4 bg-red-500/5 border border-red-500/10 rounded-lg px-3 py-2">
+                {topComp.competitor_name} is mentioned {topComp.mention_count - scan.mention_count} more times than {brand.brand_name}. Those are customers going to your competitor.
+              </p>
+            )}
+            {compStatus === 'winning' && topComp && (
+              <p className="text-xs text-emerald-400/80 mt-4 bg-emerald-500/5 border border-emerald-500/10 rounded-lg px-3 py-2">
+                {brand.brand_name} is winning — mentioned {scan.mention_count - topComp.mention_count} more times than {topComp.competitor_name}. Keep it up.
+              </p>
+            )}
           </div>
         )}
 
-        {/* Opportunities found */}
+        {/* Opportunities */}
         {(opportunityCount || 0) > 0 && (
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-5 mb-10 text-center">
-            <p className="text-amber-400 font-semibold text-lg">{opportunityCount} Opportunities Found</p>
-            <p className="text-slate-400 text-sm mt-1">
-              There are {opportunityCount} prompts where competitors appear but {brand.brand_name} doesn&apos;t.
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-5 mb-8">
+            <p className="text-amber-400 font-semibold text-base mb-1">{opportunityCount} Missed Search Opportunities</p>
+            <p className="text-slate-400 text-sm">
+              There are {opportunityCount} customer questions where competitors appear in AI answers but {brand.brand_name} doesn&apos;t.
+              These are customers you could be winning.
             </p>
           </div>
         )}
 
         {/* CTA */}
         <div className="text-center mb-12">
+          <p className="text-slate-400 text-sm mb-4">Want to know how to fix this and improve your score?</p>
           <Link
             href="/signup"
             className="inline-flex items-center justify-center px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors text-base"
           >
-            Check your brand&apos;s AI visibility
+            Check your brand for free →
           </Link>
-          <p className="text-slate-600 text-xs mt-3">Free scan - no credit card required</p>
+          <p className="text-slate-600 text-xs mt-3">Free account — no credit card required</p>
         </div>
 
-        {/* Footer */}
         <div className="text-center border-t border-slate-800 pt-6">
           <p className="text-slate-600 text-xs">
             Powered by{' '}

@@ -42,12 +42,24 @@ export default function SignupPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        // window.location.origin is localhost:3000 in dev, your real domain in production — always correct
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/auth/callback`,
       },
     })
 
     if (error) {
-      setError(error.message)
+      // Give friendly, user-readable error messages
+      if (error.message.toLowerCase().includes('already registered') || error.message.toLowerCase().includes('already exists') || error.message.toLowerCase().includes('email address is already')) {
+        setError('An account with this email already exists. Try signing in instead.')
+      } else if (error.message.toLowerCase().includes('invalid email')) {
+        setError('Please enter a valid email address.')
+      } else if (error.message.toLowerCase().includes('rate limit') || error.message.toLowerCase().includes('too many')) {
+        setError('Too many attempts. Please wait a minute and try again.')
+      } else if (error.message.toLowerCase().includes('weak password') || error.message.toLowerCase().includes('password should')) {
+        setError('Password is too weak. Use at least 8 characters with letters and numbers.')
+      } else {
+        setError(error.message)
+      }
       setLoading(false)
       return
     }
@@ -59,17 +71,27 @@ export default function SignupPage() {
   if (success) {
     return (
       <Card className="border-slate-800 bg-slate-900/50 backdrop-blur">
-        <CardContent className="pt-6">
+        <CardContent className="pt-8 pb-8">
           <div className="text-center space-y-4">
-            <CheckCircle2 className="h-12 w-12 text-emerald-400 mx-auto" />
-            <h2 className="text-xl font-semibold text-white">Check your email</h2>
+            <CheckCircle2 className="h-14 w-14 text-emerald-400 mx-auto" />
+            <h2 className="text-xl font-semibold text-white">Almost there — check your email</h2>
+            <div className="bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3">
+              <p className="text-white font-medium text-sm">{email}</p>
+            </div>
             <p className="text-slate-400 text-sm">
-              We&apos;ve sent a confirmation link to <span className="text-white font-medium">{email}</span>.
-              Click the link to activate your account.
+              We sent a confirmation link to that address. Click it to activate your account and start scanning.
             </p>
+            <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3 text-left">
+              <p className="text-amber-400 text-xs font-medium mb-1">Don&apos;t see the email?</p>
+              <ul className="text-slate-400 text-xs space-y-1">
+                <li>• Check your spam or junk folder</li>
+                <li>• It can take up to 2 minutes to arrive</li>
+                <li>• Make sure you typed your email correctly</li>
+              </ul>
+            </div>
             <Link href="/login">
-              <Button variant="outline" className="mt-4 border-slate-700 text-slate-300 hover:bg-slate-800">
-                Back to Login
+              <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
+                Go to Login
               </Button>
             </Link>
           </div>

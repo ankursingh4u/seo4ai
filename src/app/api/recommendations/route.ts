@@ -132,6 +132,16 @@ Example format:
       }]
     }
 
+    // Preserve completion state across regenerations: a user who marked
+    // "Add FAQ content" done should not see it reset when recs regenerate.
+    const { data: existingRecs } = await supabase
+      .from('recommendations')
+      .select('task_title, completed')
+      .eq('scan_id', scanId)
+    const completedTitles = new Set(
+      (existingRecs || []).filter(r => r.completed).map(r => (r.task_title || '').toLowerCase().trim())
+    )
+
     // Delete existing recommendations for this scan
     await supabase.from('recommendations').delete().eq('scan_id', scanId)
 
@@ -148,7 +158,7 @@ Example format:
       priority: validPriorities.includes(rec.priority) ? rec.priority : 'medium',
       impact_score: Math.max(0, Math.min(100, rec.impact_score || 50)),
       difficulty: validDifficulties.includes(rec.difficulty) ? rec.difficulty : 'medium',
-      completed: false,
+      completed: completedTitles.has(rec.title.substring(0, 200).toLowerCase().trim()),
     }))
 
     const { data, error } = await supabase

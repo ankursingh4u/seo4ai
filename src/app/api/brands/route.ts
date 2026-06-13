@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { PLANS } from '@/lib/payment'
 
 export const dynamic = 'force-dynamic'
 
@@ -55,6 +56,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Authentication failed: ' + authError.message }, { status: 401 })
     }
     if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+
+    // Server-side brand limit enforcement
+    const { data: userPlan } = await supabase
+      .from('user_plans')
+      .select('plan')
+      .eq('user_id', user.id)
+      .single()
+
+    const plan = (userPlan?.plan as keyof typeof PLANS) || 'starter'
+    const planConfig = PLANS[plan] || PLANS.starter
+
+    const { count: brandCount } = await supabase
+      .from('brands')
+      .select('id', { count: 'exact', head: true })
+
+    if (brandCount !== null && brandCount >= planConfig.brandLimit) {
+      return NextResponse.json({
+        error: `Brand limit reached (${brandCount}/${planConfig.brandLimit}). Upgrade your plan to add more brands.`,
+      }, { status: 403 })
+    }
 
     const body = await request.json()
     const validation = brandSchema.safeParse(body)

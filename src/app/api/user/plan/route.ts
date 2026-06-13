@@ -30,16 +30,14 @@ export async function GET() {
       .select('id')
 
     const brandIds = (userBrands || []).map(b => b.id)
-    let scanCount = 0
 
-    if (brandIds.length > 0) {
-      const { count } = await supabase
-        .from('scans')
-        .select('id', { count: 'exact', head: true })
-        .in('brand_id', brandIds)
-        .gte('created_at', startOfMonth.toISOString())
-      scanCount = count || 0
-    }
+    // Count by user_id — not affected by brand deletion
+    const { count } = await supabase
+      .from('scans')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', startOfMonth.toISOString())
+    const scanCount = count || 0
 
     return NextResponse.json({
       plan,

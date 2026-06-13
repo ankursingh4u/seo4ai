@@ -88,11 +88,11 @@ export async function POST(request: NextRequest) {
 
     recordScan(ip)
 
-    // Only 3 quick prompts for free scan (cheaper than 5)
+    // 3 discovery prompts — no brand-echo prompts (they inflate scores unfairly)
     const prompts = [
       `best ${industry} tools`,
-      `what is ${brandName}`,
       `top ${industry} companies`,
+      `recommended ${industry} for small business`,
     ]
 
     const results = await Promise.allSettled(

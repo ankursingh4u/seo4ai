@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Check, X, Loader2, Crown, Zap, Sparkles } from 'lucide-react'
+import { Check, X, Loader2, Crown, Zap, Sparkles, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface PlanInfo {
@@ -29,12 +30,12 @@ const PLAN_DETAILS = [
     borderColor: 'border-slate-800',
     features: [
       { text: '1 brand', included: true },
-      { text: '1 scan per month', included: true },
+      { text: '3 scans per month', included: true },
       { text: 'AI Visibility Score', included: true },
       { text: 'Region targeting', included: true },
       { text: 'Competitor gap scores', included: false },
       { text: 'AI Fix Plan', included: false },
-      { text: 'Bonus optimization tips', included: false },
+      { text: 'Boost content generator', included: false },
     ],
   },
   {
@@ -48,13 +49,13 @@ const PLAN_DETAILS = [
     popular: true,
     features: [
       { text: '3 brands', included: true },
-      { text: 'Weekly scans (4/month)', included: true },
+      { text: '15 scans per month', included: true },
       { text: 'AI Visibility Score', included: true },
       { text: 'Region targeting', included: true },
       { text: 'Competitor gap scores', included: true },
       { text: 'Progress history', included: true },
       { text: 'AI Fix Plan', included: false },
-      { text: 'Bonus optimization tips', included: false },
+      { text: 'Boost content generator', included: false },
     ],
   },
   {
@@ -67,23 +68,24 @@ const PLAN_DETAILS = [
     borderColor: 'border-emerald-500/30',
     features: [
       { text: '10 brands', included: true },
-      { text: 'Daily scans (30/month)', included: true },
+      { text: '60 scans per month', included: true },
       { text: 'AI Visibility Score', included: true },
       { text: 'Region targeting', included: true },
       { text: 'Competitor gap scores', included: true },
       { text: 'Progress history', included: true },
-      { text: 'AI Fix Plan — how to improve', included: true },
-      { text: 'Bonus tips — content ideas, SEO actions', included: true },
+      { text: 'AI Fix Plan', included: true },
+      { text: 'Boost content generator', included: true },
       { text: 'Export reports', included: true },
       { text: 'Priority support', included: true },
     ],
   },
 ]
 
-export default function BillingPage() {
+function BillingContent() {
   const [planInfo, setPlanInfo] = useState<PlanInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     async function load() {
@@ -94,51 +96,23 @@ export default function BillingPage() {
     load()
   }, [])
 
+  useEffect(() => {
+    if (searchParams.get('success') === 'true') {
+      toast.success('Plan upgraded successfully! It may take a moment to activate.')
+    }
+  }, [searchParams])
+
   async function handleUpgrade(plan: string) {
     setCheckoutLoading(plan)
     try {
-      const res = await fetch('/api/razorpay/create-subscription', {
+      const res = await fetch('/api/polar/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
-
-      // Load Razorpay checkout
-      const script = document.createElement('script')
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-      script.onload = () => {
-        const options = {
-          key: data.razorpayKeyId,
-          subscription_id: data.subscriptionId,
-          name: 'AuraRank',
-          description: data.description,
-          prefill: data.prefill,
-          theme: { color: '#6366f1' },
-          handler: async (response: { razorpay_payment_id: string; razorpay_subscription_id: string; razorpay_signature: string }) => {
-            // Verify payment
-            const verifyRes = await fetch('/api/razorpay/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ ...response, plan }),
-            })
-            if (verifyRes.ok) {
-              toast.success('Plan upgraded successfully!')
-              window.location.reload()
-            } else {
-              toast.error('Payment verification failed')
-            }
-          },
-          modal: {
-            ondismiss: () => setCheckoutLoading(null),
-          },
-        }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const rzp = new (window as any).Razorpay(options)
-        rzp.open()
-      }
-      document.body.appendChild(script)
+      window.location.href = data.checkoutUrl
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Failed to start checkout')
       setCheckoutLoading(null)
@@ -146,7 +120,14 @@ export default function BillingPage() {
   }
 
   async function handleManage() {
-    toast.info('To manage your subscription, please contact support at support@bolddev.live')
+    try {
+      const res = await fetch('/api/polar/portal', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      window.location.href = data.portalUrl
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to open billing portal')
+    }
   }
 
   if (loading) {
@@ -193,13 +174,12 @@ export default function BillingPage() {
                   {isCurrent && (
                     <Badge className="bg-emerald-600/20 text-emerald-400 border-emerald-500/30 text-[10px]">Current</Badge>
                   )}
-                  {plan.popular && !isCurrent && (
+                  {'popular' in plan && plan.popular && !isCurrent && (
                     <Badge className="bg-indigo-600/20 text-indigo-400 border-indigo-500/30 text-[10px]">Popular</Badge>
                   )}
                 </div>
                 <div className="mt-1">
-                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <span className="text-2xl font-bold">{(plan as any).priceLabel || `₹${plan.price}`}</span>
+                  <span className="text-2xl font-bold">{plan.priceLabel}</span>
                   {plan.price > 0 && <span className="text-slate-500 text-sm">/mo</span>}
                 </div>
               </CardHeader>
@@ -221,7 +201,7 @@ export default function BillingPage() {
                 {isCurrent ? (
                   currentPlan !== 'starter' ? (
                     <Button variant="outline" className="w-full border-slate-700 text-slate-400 h-8 text-xs" onClick={handleManage}>
-                      Manage Subscription
+                      <ExternalLink className="h-3 w-3 mr-1" /> Manage Subscription
                     </Button>
                   ) : (
                     <Button variant="outline" disabled className="w-full border-slate-700 text-slate-500 h-8 text-xs">
@@ -239,7 +219,7 @@ export default function BillingPage() {
                   </Button>
                 ) : (
                   <Button variant="outline" className="w-full border-slate-700 text-slate-400 h-8 text-xs" onClick={handleManage}>
-                    Switch Plan
+                    <ExternalLink className="h-3 w-3 mr-1" /> Manage Subscription
                   </Button>
                 )}
               </CardContent>
@@ -248,5 +228,13 @@ export default function BillingPage() {
         })}
       </div>
     </div>
+  )
+}
+
+export default function BillingPage() {
+  return (
+    <Suspense fallback={<div className="h-8 w-32 bg-slate-800 rounded animate-pulse" />}>
+      <BillingContent />
+    </Suspense>
   )
 }

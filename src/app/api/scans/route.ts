@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { PLANS } from '@/lib/payment'
 
 export const dynamic = 'force-dynamic'
 
@@ -41,6 +42,33 @@ export async function POST(request: NextRequest) {
     const { brandId } = await request.json()
     if (!brandId) return NextResponse.json({ error: 'brandId is required' }, { status: 400 })
 
+    // Server-side plan enforcement — UI checks are bypassable
+    const { data: userPlan } = await supabase
+      .from('user_plans')
+      .select('plan')
+      .eq('user_id', user.id)
+      .single()
+
+    const plan = (userPlan?.plan as keyof typeof PLANS) || 'starter'
+    const planConfig = PLANS[plan] || PLANS.starter
+
+    const startOfMonth = new Date()
+    startOfMonth.setDate(1)
+    startOfMonth.setHours(0, 0, 0, 0)
+
+    // Count scans by user_id — immune to brand deletion resets
+    const { count: scanCount } = await supabase
+      .from('scans')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', startOfMonth.toISOString())
+
+    if ((scanCount || 0) >= planConfig.scanLimit) {
+      return NextResponse.json({
+        error: `Scan limit reached (${scanCount}/${planConfig.scanLimit} this month). Upgrade your plan at /dashboard/billing`,
+      }, { status: 403 })
+    }
+
     const { data: brand } = await supabase
       .from('brands')
       .select('id')
@@ -51,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     const { data: scan, error } = await supabase
       .from('scans')
-      .insert({ brand_id: brandId, status: 'pending' })
+      .insert({ brand_id: brandId, user_id: user.id, status: 'pending' })
       .select()
       .single()
 

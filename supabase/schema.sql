@@ -24,6 +24,7 @@ create table public.brands (
 create table public.scans (
   id uuid default uuid_generate_v4() primary key,
   brand_id uuid references public.brands(id) on delete cascade not null,
+  user_id uuid references auth.users(id) on delete cascade,
   scan_date timestamptz default now(),
   visibility_score integer default 0,
   mention_count integer default 0,
@@ -118,6 +119,8 @@ create policy "Users can update own scans" on public.scans
   for update using (
     exists (select 1 from public.brands where brands.id = scans.brand_id and brands.user_id = auth.uid())
   );
+create policy "Users can view own scans by user_id" on public.scans
+  for select using (auth.uid() = user_id);
 
 -- Prompt Results policies
 create policy "Users can view own prompt results" on public.prompt_results
@@ -205,6 +208,7 @@ create policy "Users can update own recommendations" on public.recommendations
 
 create index idx_brands_user_id on public.brands(user_id);
 create index idx_scans_brand_id on public.scans(brand_id);
+create index idx_scans_user_id on public.scans(user_id);
 create index idx_scans_scan_date on public.scans(scan_date desc);
 create index idx_prompt_results_scan_id on public.prompt_results(scan_id);
 create index idx_competitor_analysis_scan_id on public.competitor_analysis(scan_id);

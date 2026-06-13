@@ -49,21 +49,21 @@ function getIndustryPrompts(
   switch (category) {
     case 'restaurant':
       return [
-        `best restaurants${loc}`,
-        `where to eat${loc}`,
+        `best ${industry}${loc}`,
+        `top ${industry} chains`,
+        `most popular ${industry} brands`,
         `best ${industry} near me`,
-        `top rated restaurants${loc}`,
+        `top rated ${industry}${loc}`,
         ...(location ? [
-          `best restaurants in ${location}`,
-          `where to eat in ${location}`,
-          `top rated restaurants in ${location}`,
           `best ${industry} in ${location}`,
+          `top ${industry} chains in ${location}`,
           `popular ${industry} spots in ${location}`,
+          `recommended ${industry} in ${location}`,
         ] : []),
         `best ${industry} restaurants`,
-        `${industry} food recommendations${loc}`,
-        `most popular ${industry} places${loc}`,
-        `recommended ${industry} dining${loc}`,
+        `most visited ${industry} places`,
+        `recommended ${industry} options`,
+        `top ${industry} for families`,
       ]
     case 'hotel':
       return [

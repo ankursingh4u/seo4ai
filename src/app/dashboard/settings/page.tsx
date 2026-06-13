@@ -7,8 +7,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
-import { Loader2, Lock, AlertTriangle } from 'lucide-react'
+import { Loader2, Lock, AlertTriangle, CalendarClock } from 'lucide-react'
 import { toast } from 'sonner'
+
+interface BrandRow {
+  id: string
+  brand_name: string
+  auto_scan?: 'off' | 'weekly' | 'daily'
+}
 
 export default function SettingsPage() {
   const [email, setEmail] = useState('')
@@ -17,6 +23,9 @@ export default function SettingsPage() {
   const [changingPassword, setChangingPassword] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [brands, setBrands] = useState<BrandRow[]>([])
+  const [plan, setPlan] = useState<'starter' | 'pro' | 'max'>('starter')
+  const [savingBrandId, setSavingBrandId] = useState<string | null>(null)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,8 +36,31 @@ export default function SettingsPage() {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) setEmail(user.email || '')
     })
+    fetch('/api/user/plan').then(r => r.ok ? r.json() : null).then(d => { if (d?.plan) setPlan(d.plan) }).catch(() => {})
+    fetch('/api/brands').then(r => r.ok ? r.json() : []).then(d => { if (Array.isArray(d)) setBrands(d) }).catch(() => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  async function handleAutoScanChange(brandId: string, value: 'off' | 'weekly' | 'daily') {
+    setSavingBrandId(brandId)
+    const prev = brands
+    setBrands(bs => bs.map(b => b.id === brandId ? { ...b, auto_scan: value } : b))
+    try {
+      const res = await fetch(`/api/brands/${brandId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ autoScan: value }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to update')
+      toast.success(value === 'off' ? 'Auto-scan disabled' : `Auto-scan set to ${value}`)
+    } catch (err) {
+      setBrands(prev)
+      toast.error(err instanceof Error ? err.message : 'Failed to update auto-scan')
+    } finally {
+      setSavingBrandId(null)
+    }
+  }
 
   async function handleChangePassword(e: React.FormEvent) {
     e.preventDefault()
@@ -113,6 +145,53 @@ export default function SettingsPage() {
               Update Password
             </Button>
           </form>
+        </CardContent>
+      </Card>
+
+      {/* Automation — Scheduled Auto-Scans */}
+      <Card className="bg-slate-900/50 border-slate-800 mb-6">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <CalendarClock className="h-4 w-4" /> Scheduled Auto-Scans
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-slate-400 mb-4">
+            Automatically re-scan your brands and get a digest email with your score change,
+            new opportunities, and competitor movement.
+            {plan === 'starter' && (
+              <span className="block mt-2 text-amber-400">
+                Scheduled scans require the Pro (weekly) or Max (daily) plan.
+              </span>
+            )}
+            {plan === 'pro' && (
+              <span className="block mt-2 text-slate-500">Weekly scans on Pro. Upgrade to Max for daily.</span>
+            )}
+          </p>
+          {brands.length === 0 ? (
+            <p className="text-sm text-slate-500">Add a brand first to enable auto-scans.</p>
+          ) : (
+            <div className="space-y-2">
+              {brands.map(b => (
+                <div key={b.id} className="flex items-center justify-between gap-3 bg-slate-800/40 rounded-lg px-3 py-2">
+                  <span className="text-sm text-slate-200 truncate">{b.brand_name}</span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {savingBrandId === b.id && <Loader2 className="h-3.5 w-3.5 animate-spin text-slate-400" />}
+                    <select
+                      value={b.auto_scan || 'off'}
+                      disabled={plan === 'starter' || savingBrandId === b.id}
+                      onChange={(e) => handleAutoScanChange(b.id, e.target.value as 'off' | 'weekly' | 'daily')}
+                      className="bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-md px-2 py-1.5 disabled:opacity-50 focus:outline-none focus:border-indigo-500"
+                    >
+                      <option value="off">Off</option>
+                      <option value="weekly" disabled={plan === 'starter'}>Weekly</option>
+                      <option value="daily" disabled={plan !== 'max'}>Daily (Max)</option>
+                    </select>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 

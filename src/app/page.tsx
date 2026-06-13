@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/landing/navbar'
 import { FreeScan } from '@/components/landing/free-scan'
-import { ExitIntent } from '@/components/landing/exit-intent'
 import {
   Search, BarChart3, Target, TrendingUp, Shield,
   ArrowRight, Check, Eye, Bot, Brain, Lightbulb, Sparkles
@@ -22,12 +21,11 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-950">
       <Navbar />
-      <ExitIntent />
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/50 via-slate-950 to-slate-950" />
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/50 via-slate-950 to-slate-950 pointer-events-none" />
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative max-w-5xl mx-auto text-center">
           <Badge variant="outline" className="border-indigo-500/30 text-indigo-400 mb-6 px-4 py-1.5">
@@ -43,9 +41,9 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-            ChatGPT, Perplexity, Claude, and Gemini are replacing Google Search.
-            If AI doesn&apos;t mention your brand, you&apos;re losing customers.
-            AuraRank detects, analyzes, and helps you fix your AI visibility.
+            ChatGPT, Gemini, and Perplexity are replacing Google Search.
+            When customers ask AI &ldquo;what&apos;s the best option?&rdquo; — are you in the answer?
+            AuraRank finds out, shows you who&apos;s winning, and tells you exactly what to fix.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -64,15 +62,15 @@ export default function LandingPage() {
           <div className="flex flex-wrap justify-center gap-8 text-sm text-slate-500">
             <div className="flex items-center gap-2">
               <Bot className="h-4 w-4 text-indigo-400" />
-              <span>4 AI Models Tracked</span>
+              <span>AI-Powered Search Testing</span>
             </div>
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4 text-indigo-400" />
-              <span>20+ Prompt Templates</span>
+              <span>20+ Customer Search Questions</span>
             </div>
             <div className="flex items-center gap-2">
               <Lightbulb className="h-4 w-4 text-indigo-400" />
-              <span>Actionable Fix Plans</span>
+              <span>Personalized Fix Plans</span>
             </div>
           </div>
 
@@ -134,7 +132,7 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { step: '01', title: 'Set Up Your Brand', desc: 'Add your brand name, industry, and up to 3 competitors to track.', icon: Shield },
-              { step: '02', title: 'AI Scans Models', desc: 'We query ChatGPT, Claude, Perplexity, and Gemini with industry prompts.', icon: Search },
+              { step: '02', title: 'AI Tests Your Visibility', desc: 'We ask AI the exact questions your customers ask — and record whether your brand appears.', icon: Search },
               { step: '03', title: 'Get Your Score', desc: 'See your AI Visibility Score out of 100 with detailed breakdown.', icon: BarChart3 },
               { step: '04', title: 'Follow Fix Plan', desc: 'Get actionable recommendations to improve your AI visibility.', icon: Lightbulb },
             ].map((item) => (
@@ -216,7 +214,7 @@ export default function LandingPage() {
               { icon: Search, title: 'Prompt Opportunity Detection', desc: 'Discover prompts where competitors appear but you don\'t — your biggest opportunities.' },
               { icon: Lightbulb, title: 'AI Fix Plan', desc: 'Get specific, actionable recommendations to improve your AI visibility with priority ratings.' },
               { icon: TrendingUp, title: 'Progress Tracking', desc: 'Monitor your AI visibility score over time and see the impact of your optimization efforts.' },
-              { icon: Bot, title: 'Multi-AI Coverage', desc: 'Track your visibility across ChatGPT, Perplexity, Claude, and Gemini simultaneously.' },
+              { icon: Bot, title: 'Real Customer Questions', desc: 'We test the exact prompts your customers use — not generic queries. Real signal, real results.' },
             ].map((feature) => (
               <Card key={feature.title} className="bg-slate-900/50 border-slate-800 hover:border-slate-700 transition-colors">
                 <CardContent className="pt-6">
@@ -245,12 +243,12 @@ export default function LandingPage() {
                 border: 'border-slate-800', btn: 'outline' as const, btnClass: 'border-slate-700 text-slate-300 hover:bg-slate-800', btnText: 'Get Started Free',
                 features: [
                   { text: '1 brand', on: true },
-                  { text: '1 scan per month', on: true },
+                  { text: '3 scans per month', on: true },
                   { text: 'AI Visibility Score', on: true },
                   { text: 'Region targeting', on: true },
                   { text: 'Competitor scores', on: false },
                   { text: 'AI Fix Plan', on: false },
-                  { text: 'Bonus tips', on: false },
+                  { text: 'Boost content generator', on: false },
                 ],
               },
               {
@@ -258,7 +256,7 @@ export default function LandingPage() {
                 border: 'border-indigo-500/50 ring-1 ring-indigo-500/20', btn: 'default' as const, btnClass: 'bg-indigo-600 hover:bg-indigo-700 text-white', btnText: 'Get Started',
                 features: [
                   { text: '3 brands', on: true },
-                  { text: 'Weekly scans (4/mo)', on: true },
+                  { text: '15 scans per month', on: true },
                   { text: 'AI Visibility Score', on: true },
                   { text: 'Competitor gap scores', on: true, highlight: true },
                   { text: 'Region targeting', on: true },
@@ -271,10 +269,10 @@ export default function LandingPage() {
                 border: 'border-emerald-500/30 ring-1 ring-emerald-500/10', btn: 'default' as const, btnClass: 'bg-emerald-600 hover:bg-emerald-700 text-white', btnText: 'Get Started',
                 features: [
                   { text: '10 brands', on: true },
-                  { text: 'Daily scans (30/mo)', on: true },
+                  { text: '60 scans per month', on: true },
                   { text: 'Competitor gap scores', on: true },
                   { text: 'AI Fix Plan', on: true, highlight: true },
-                  { text: 'Bonus optimization tips', on: true, highlight: true },
+                  { text: 'Boost content generator', on: true, highlight: true },
                   { text: 'Export reports', on: true },
                   { text: 'Priority support', on: true },
                 ],
