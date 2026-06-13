@@ -1,15 +1,25 @@
 import { Polar } from '@polar-sh/sdk'
 
 // ── Billing mode switch ──────────────────────────────────────────────
-// Flip ONE env var to switch test ↔ real billing: POLAR_SERVER=sandbox|production
-// Each mode reads its own credentials so both can live side by side:
-//   sandbox    → POLAR_SANDBOX_*       (test card 4242…, no real charges)
-//   production → POLAR_PRODUCTION_*     (real money)
-// Falls back to the generic POLAR_* vars if a mode-specific one isn't set.
+// Flip ONE env var to switch test ↔ real billing:
+//   BILLING_TEST_MODE=true   → TEST  (sandbox, card 4242…, no real charges)
+//   BILLING_TEST_MODE=false  → REAL  (production, real money)
+// Safe default is TEST when the var is unset/unrecognized, so you can never
+// accidentally charge a real card. Each mode reads its own credentials:
+//   test → POLAR_SANDBOX_*      |   real → POLAR_PRODUCTION_*
+// (falls back to legacy POLAR_SERVER / generic POLAR_* if those aren't set.)
 export type PolarMode = 'sandbox' | 'production'
 
+export function isBillingTestMode(): boolean {
+  if (process.env.BILLING_TEST_MODE !== undefined) {
+    return process.env.BILLING_TEST_MODE.toLowerCase() !== 'false'
+  }
+  // legacy fallback
+  return process.env.POLAR_SERVER !== 'production'
+}
+
 export function getPolarMode(): PolarMode {
-  return process.env.POLAR_SERVER === 'sandbox' ? 'sandbox' : 'production'
+  return isBillingTestMode() ? 'sandbox' : 'production'
 }
 
 function modeEnv(name: string): string {
