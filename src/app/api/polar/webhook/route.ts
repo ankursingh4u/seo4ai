@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { validateEvent, WebhookVerificationError } from '@polar-sh/sdk/webhooks'
 import type { Subscription } from '@polar-sh/sdk/models/components/subscription.js'
-import { getPlanByPolarProductId } from '@/lib/payment'
+import { getPlanByPolarProductId, getPolarWebhookSecret } from '@/lib/payment'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,14 +32,15 @@ function mapStatus(status: string): PlanStatus {
 export async function POST(request: NextRequest) {
   const body = await request.text()
   const headers = Object.fromEntries(request.headers.entries())
+  const webhookSecret = getPolarWebhookSecret()
 
-  if (!process.env.POLAR_WEBHOOK_SECRET) {
+  if (!webhookSecret) {
     return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 })
   }
 
   let event
   try {
-    event = validateEvent(body, headers, process.env.POLAR_WEBHOOK_SECRET)
+    event = validateEvent(body, headers, webhookSecret)
   } catch (err) {
     if (err instanceof WebhookVerificationError) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 403 })

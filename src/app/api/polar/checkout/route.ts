@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { getPolar, PLANS } from '@/lib/payment'
+import { getPolar, getProductId } from '@/lib/payment'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -15,15 +15,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
     }
 
-    const planConfig = PLANS[plan as 'pro' | 'max']
-    if (!planConfig.productId) {
-      return NextResponse.json({ error: 'Polar product not configured. Set POLAR_PRO_PRODUCT_ID and POLAR_MAX_PRODUCT_ID in env vars.' }, { status: 500 })
+    const productId = getProductId(plan as 'pro' | 'max')
+    if (!productId) {
+      return NextResponse.json({ error: 'Polar product not configured for the current POLAR_SERVER mode. Set the matching POLAR_SANDBOX_/POLAR_PRODUCTION_ product IDs.' }, { status: 500 })
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
     const checkout = await getPolar().checkouts.create({
-      products: [planConfig.productId],
+      products: [productId],
       successUrl: `${appUrl}/dashboard/billing?success=true&checkout_id={CHECKOUT_ID}`,
       customerEmail: user.email!,
       // Tie the Polar customer to our Supabase user so the portal + webhooks
