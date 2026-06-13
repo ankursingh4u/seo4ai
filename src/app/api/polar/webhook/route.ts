@@ -61,12 +61,15 @@ export async function POST(request: NextRequest) {
       const plan = getPlanByPolarProductId(sub.productId)
 
       if (userId) {
+        // Only write columns the app actually relies on (plan + status). The
+        // portal resolves customers by externalCustomerId and gating reads
+        // plan/status, so polar_customer_id / polar_subscription_id are not
+        // required for billing to function — kept out so this works whether or
+        // not the add_polar_billing.sql migration has run.
         await supabase.from('user_plans').upsert({
           user_id: userId,
           plan,
           status: mapStatus(sub.status),
-          polar_customer_id: sub.customerId,
-          polar_subscription_id: sub.id,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' })
       }
