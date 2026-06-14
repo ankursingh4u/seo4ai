@@ -10,11 +10,13 @@ How to use this guide: do Parts 1–5 once, then go through the **three plan sec
 
 ---
 
-## Part 1 — Sign up & email verification
+## Part 1 — Sign up & email verification (confirmation is REQUIRED)
 1. Open the app → **Sign up**.
 2. Password `123` → ❗ should show **"min 8 characters"**.
 3. Real email + 8+ char password → see **"check your email"** screen.
-4. Open the email → click the link → ✅ opens **aurarank-five.vercel.app** (NOT localhost) and logs you in.
+4. **You must open the email and click the link** — accounts are NOT active until confirmed.
+   - ✅ The link opens **aurarank-five.vercel.app** (NOT localhost) and logs you in.
+   - If you try to log in *before* clicking the link → ✅ you should be blocked / told to confirm.
 
 ## Part 2 — Login / logout
 - Log out → open `/dashboard` directly → ✅ bounced to login.
@@ -25,8 +27,8 @@ How to use this guide: do Parts 1–5 once, then go through the **three plan sec
 - Fake brand `Zxqwplfake` → ✅ scores very low (0–10), no fake mentions.
 
 ## Part 4 — Add a brand + first scan
-- Fill the brand form (name, industry, up to 3 competitors, region) → Save.
-- ✅ Auto-scan runs (~20–30s) → you get a Visibility Score and metrics.
+- Fill the brand form. For a clear non-zero result use: name `Slack`, industry `team chat`, competitors `Microsoft Teams`, `Discord`, `Zoom`, region `Global` → Save.
+- ✅ Auto-scan runs (~20–30s) → **Slack should score high (well-known brand)**, with real AI Mention Rate and metrics. *(A made-up brand, or a very generic industry, will correctly score low.)*
 
 ---
 
