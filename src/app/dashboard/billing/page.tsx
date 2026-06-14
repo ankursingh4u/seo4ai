@@ -162,6 +162,11 @@ function BillingContent() {
           const isCurrent = currentPlan === plan.key
           const isDowngrade = (currentPlan === 'max' && plan.key !== 'max') || (currentPlan === 'pro' && plan.key === 'starter')
           const isUpgrade = !isCurrent && !isDowngrade
+          // Already has a paid subscription → plan changes must go through the
+          // Polar customer portal (creating a 2nd checkout errors with
+          // "You already have an active subscription"). Only brand-new
+          // (starter) users go through checkout.
+          const isSubscribed = currentPlan !== 'starter'
 
           return (
             <Card key={plan.key} className={`bg-slate-900/50 flex flex-col ${isCurrent ? 'ring-2 ring-indigo-500/50' : ''} ${plan.borderColor}`}>
@@ -199,7 +204,7 @@ function BillingContent() {
                 </ul>
 
                 {isCurrent ? (
-                  currentPlan !== 'starter' ? (
+                  isSubscribed ? (
                     <Button variant="outline" className="w-full border-slate-700 text-slate-400 h-8 text-xs" onClick={handleManage}>
                       <ExternalLink className="h-3 w-3 mr-1" /> Manage Subscription
                     </Button>
@@ -208,7 +213,13 @@ function BillingContent() {
                       Free Plan
                     </Button>
                   )
-                ) : isUpgrade ? (
+                ) : isSubscribed ? (
+                  // Existing subscriber switching plans → portal (handles proration)
+                  <Button variant="outline" className="w-full border-slate-700 text-slate-300 hover:bg-slate-800 h-8 text-xs" onClick={handleManage}>
+                    <ExternalLink className="h-3 w-3 mr-1" /> {isUpgrade ? `Upgrade to ${plan.name}` : `Switch to ${plan.name}`}
+                  </Button>
+                ) : (
+                  // Brand-new (starter) user → checkout
                   <Button
                     className={`w-full h-8 text-xs ${plan.key === 'max' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-indigo-600 hover:bg-indigo-700'} text-white`}
                     onClick={() => handleUpgrade(plan.key)}
@@ -216,10 +227,6 @@ function BillingContent() {
                   >
                     {checkoutLoading === plan.key ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : null}
                     Upgrade to {plan.name}
-                  </Button>
-                ) : (
-                  <Button variant="outline" className="w-full border-slate-700 text-slate-400 h-8 text-xs" onClick={handleManage}>
-                    <ExternalLink className="h-3 w-3 mr-1" /> Manage Subscription
                   </Button>
                 )}
               </CardContent>
