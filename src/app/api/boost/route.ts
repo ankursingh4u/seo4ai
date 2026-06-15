@@ -11,14 +11,16 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    // Check plan — boost generation is Max plan only
-    const { data: profile } = await supabase
-      .from('users')
+    // Check plan — boost generation is Max plan only.
+    // Plan lives in user_plans (kept in sync by the Polar webhook), same source
+    // as /api/user/plan and the other gated routes.
+    const { data: userPlan } = await supabase
+      .from('user_plans')
       .select('plan')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .single()
 
-    const plan = profile?.plan || 'free'
+    const plan = userPlan?.plan || 'starter'
     if (plan !== 'max') {
       return NextResponse.json({ error: 'Upgrade to Max plan to generate AI Visibility Boost content.' }, { status: 403 })
     }
