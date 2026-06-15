@@ -32,6 +32,16 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    // AI Fix Plan is a Max-only feature — enforce server-side, not just in UI.
+    const { data: userPlan } = await supabase
+      .from('user_plans')
+      .select('plan')
+      .eq('user_id', user.id)
+      .single()
+    if ((userPlan?.plan || 'starter') !== 'max') {
+      return NextResponse.json({ error: 'Upgrade to Max plan to generate an AI Fix Plan.' }, { status: 403 })
+    }
+
     const { scanId } = await request.json()
     if (!scanId) return NextResponse.json({ error: 'scanId is required' }, { status: 400 })
 
