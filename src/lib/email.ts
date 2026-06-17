@@ -13,7 +13,7 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'AuraRank <noreply@aurarank.io>',
+      from: 'AuraRank <noreply@bolddev.live>',
       to,
       subject,
       html,
