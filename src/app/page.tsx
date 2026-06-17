@@ -43,7 +43,7 @@ export default function LandingPage() {
           <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
             ChatGPT, Gemini, and Perplexity are replacing Google Search.
             When customers ask AI &ldquo;what&apos;s the best option?&rdquo; — are you in the answer?
-            AuraRank finds out, shows you who&apos;s winning, and tells you exactly what to fix.
+            SEO4AI finds out, shows you who&apos;s winning, and tells you exactly what to fix.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -158,17 +158,17 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
-                quote: "We discovered we were invisible on ChatGPT. After following AuraRank's fix plan, we went from 0 to mentioned in 8/10 prompts.",
+                quote: "We discovered we were invisible on ChatGPT. After following SEO4AI's fix plan, we went from 0 to mentioned in 8/10 prompts.",
                 name: 'Sarah K.',
                 role: 'SaaS Founder',
               },
               {
-                quote: "Our competitor was getting all the AI recommendations. AuraRank showed us exactly what to fix. Our visibility score went from 12 to 67 in 6 weeks.",
+                quote: "Our competitor was getting all the AI recommendations. SEO4AI showed us exactly what to fix. Our visibility score went from 12 to 67 in 6 weeks.",
                 name: 'Mike R.',
                 role: 'Agency Owner',
               },
               {
-                quote: "As a local restaurant, we had no idea AI was sending customers to our competitors. AuraRank's regional targeting changed everything.",
+                quote: "As a local restaurant, we had no idea AI was sending customers to our competitors. SEO4AI's regional targeting changed everything.",
                 name: 'Priya M.',
                 role: 'Restaurant Owner',
               },
@@ -338,14 +338,14 @@ export default function LandingPage() {
       <footer className="border-t border-slate-800 py-12 px-4">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            AuraRank
+            SEO4AI
           </div>
           <div className="flex gap-8 text-sm text-slate-500">
             <a href="#features" className="hover:text-white transition-colors">Features</a>
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
             <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
           </div>
-          <p className="text-sm text-slate-600">&copy; 2025 AuraRank. All rights reserved.</p>
+          <p className="text-sm text-slate-600">&copy; 2025 SEO4AI. All rights reserved.</p>
         </div>
       </footer>
     </div>

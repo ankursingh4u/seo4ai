@@ -16,14 +16,14 @@ export default function MarketingLayout({
             href="/"
             className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent"
           >
-            AuraRank
+            SEO4AI
           </Link>
           <div className="flex gap-8 text-sm text-slate-500">
             <Link href="/#features" className="hover:text-white transition-colors">Features</Link>
             <Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link>
             <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
           </div>
-          <p className="text-sm text-slate-600">&copy; 2025 AuraRank. All rights reserved.</p>
+          <p className="text-sm text-slate-600">&copy; 2025 SEO4AI. All rights reserved.</p>
         </div>
       </footer>
     </div>

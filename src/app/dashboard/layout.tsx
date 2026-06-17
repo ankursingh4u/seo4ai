@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Link href="/dashboard" className="flex items-center gap-2">
           <Eye className="h-6 w-6 text-indigo-400" />
           <span className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            AuraRank
+            SEO4AI
           </span>
         </Link>
       </div>
@@ -100,7 +100,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </SheetContent>
         </Sheet>
         <span className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-          AuraRank
+          SEO4AI
         </span>
       </div>
 

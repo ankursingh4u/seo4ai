@@ -29,7 +29,7 @@ export default function AISEOGuidePage() {
             AI SEO: Why Your Business Needs to Optimize for AI Search in 2025
           </h1>
           <p className="text-slate-500 text-sm">
-            By the AuraRank Team
+            By the SEO4AI Team
           </p>
         </div>
 
@@ -130,7 +130,7 @@ export default function AISEOGuidePage() {
           </h3>
           <p className="text-slate-400 leading-relaxed">
             You cannot improve what you do not measure. Systematically query AI models with the
-            prompts your customers use and document where your brand appears (or does not). AuraRank
+            prompts your customers use and document where your brand appears (or does not). SEO4AI
             automates this across ChatGPT, Perplexity, Claude, and Gemini, giving you a baseline AI
             Visibility Score and competitor comparison.
           </p>

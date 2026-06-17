@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 import { createClient } from '@supabase/supabase-js'
 
-export const alt = 'AI Visibility Report — AuraRank'
+export const alt = 'AI Visibility Report — SEO4AI'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -15,7 +15,7 @@ export default async function Image({ params }: { params: { token: string } }) {
         alignItems: 'center', justifyContent: 'center', background: '#020617', color: '#fff',
       }}
     >
-      <div style={{ display: 'flex', fontSize: 64, fontWeight: 700 }}>AuraRank</div>
+      <div style={{ display: 'flex', fontSize: 64, fontWeight: 700 }}>SEO4AI</div>
       <div style={{ display: 'flex', fontSize: 30, color: '#94a3b8', marginTop: 12 }}>
         Is AI recommending your brand?
       </div>
@@ -82,7 +82,7 @@ export default async function Image({ params }: { params: { token: string } }) {
         >
           {/* header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', fontSize: 34, fontWeight: 700, color: '#a5b4fc' }}>AuraRank</div>
+            <div style={{ display: 'flex', fontSize: 34, fontWeight: 700, color: '#a5b4fc' }}>SEO4AI</div>
             <div style={{ display: 'flex', fontSize: 24, color: '#64748b' }}>AI Visibility Report</div>
           </div>
 
@@ -116,7 +116,7 @@ export default async function Image({ params }: { params: { token: string } }) {
           {/* footer */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', fontSize: 28, fontWeight: 600, color }}>{label}</div>
-            <div style={{ display: 'flex', fontSize: 24, color: '#64748b' }}>aurarank-five.vercel.app</div>
+            <div style={{ display: 'flex', fontSize: 24, color: '#64748b' }}>seo4ai.bolddev.live</div>
           </div>
         </div>
       ),

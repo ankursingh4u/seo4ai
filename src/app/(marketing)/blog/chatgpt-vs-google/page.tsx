@@ -29,7 +29,7 @@ export default function ChatGPTvsGooglePage() {
             ChatGPT vs Google: How AI Search is Changing Brand Discovery
           </h1>
           <p className="text-slate-500 text-sm">
-            By the AuraRank Team
+            By the SEO4AI Team
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export default function ChatGPTvsGooglePage() {
                 <tr className="border-b border-slate-800">
                   <td className="py-3 pr-4 font-medium text-slate-300">Tracking tools</td>
                   <td className="py-3 pr-4">Google Search Console, Ahrefs, etc.</td>
-                  <td className="py-3">AuraRank and similar AI visibility tools</td>
+                  <td className="py-3">SEO4AI and similar AI visibility tools</td>
                 </tr>
                 <tr>
                   <td className="py-3 pr-4 font-medium text-slate-300">Competitive moat</td>

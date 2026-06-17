@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
       .single()
     const name = brand?.brand_name || 'This brand'
     const title = `${name}'s AI Visibility Score: ${scan.visibility_score}/100`
-    const description = `See whether ChatGPT and other AI tools recommend ${name}${brand?.industry ? ` for ${brand.industry}` : ''} — and how it stacks up against competitors. Free AI visibility report by AuraRank.`
+    const description = `See whether ChatGPT and other AI tools recommend ${name}${brand?.industry ? ` for ${brand.industry}` : ''} — and how it stacks up against competitors. Free AI visibility report by SEO4AI.`
     return {
       title,
       description,
@@ -146,7 +146,7 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
         {/* Logo */}
         <div className="text-center mb-10">
           <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            AuraRank
+            SEO4AI
           </Link>
           <p className="text-xs text-slate-500 mt-1">AI Visibility Report</p>
         </div>
@@ -293,7 +293,7 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
           <p className="text-slate-600 text-xs">
             Powered by{' '}
             <Link href="/" className="text-indigo-400 hover:text-indigo-300 transition-colors">
-              AuraRank
+              SEO4AI
             </Link>
             {' '}&mdash; AI Visibility Intelligence
           </p>

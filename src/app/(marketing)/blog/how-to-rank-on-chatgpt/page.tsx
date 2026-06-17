@@ -29,7 +29,7 @@ export default function HowToRankOnChatGPTPage() {
             How to Rank on ChatGPT: The Complete Guide to AI Visibility
           </h1>
           <p className="text-slate-500 text-sm">
-            By the AuraRank Team
+            By the SEO4AI Team
           </p>
         </div>
 
@@ -99,7 +99,7 @@ export default function HowToRankOnChatGPTPage() {
             Before you can improve, you need to know where you stand. Ask ChatGPT, Perplexity,
             Claude, and Gemini the questions your customers would ask about your industry. Note
             whether your brand appears, where it ranks in the list, and what language the model uses
-            to describe you. Tools like AuraRank automate this process across multiple AI models and
+            to describe you. Tools like SEO4AI automate this process across multiple AI models and
             dozens of prompts simultaneously.
           </p>
 
@@ -160,13 +160,13 @@ export default function HowToRankOnChatGPTPage() {
           </p>
 
           <h2 className="text-2xl font-bold mt-12 mb-4 text-white">
-            How AuraRank Helps You Rank on ChatGPT
+            How SEO4AI Helps You Rank on ChatGPT
           </h2>
           <p className="text-slate-400 leading-relaxed">
-            AuraRank is purpose-built for the AI search era. It scans ChatGPT, Perplexity, Claude,
+            SEO4AI is purpose-built for the AI search era. It scans ChatGPT, Perplexity, Claude,
             and Gemini with industry-specific prompts to measure your brand visibility, compare you
             against competitors, and generate a personalized fix plan with prioritized
-            recommendations. Instead of manually testing prompts one by one, AuraRank gives you a
+            recommendations. Instead of manually testing prompts one by one, SEO4AI gives you a
             comprehensive AI Visibility Score and a clear roadmap to improve it.
           </p>
 

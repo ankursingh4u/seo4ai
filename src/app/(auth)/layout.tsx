@@ -4,7 +4,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            AuraRank
+            SEO4AI
           </h1>
           <p className="text-slate-400 mt-2 text-sm">AI Visibility & Brand Intelligence</p>
         </div>

@@ -13,7 +13,7 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'AuraRank <noreply@bolddev.live>',
+      from: 'SEO4AI <noreply@bolddev.live>',
       to,
       subject,
       html,
@@ -62,7 +62,7 @@ export function weeklyDigestEmail(d: DigestData) {
     : ''
 
   return {
-    subject: `AuraRank weekly: ${d.brandName} — ${d.score}/100 (${deltaLabel})`,
+    subject: `SEO4AI weekly: ${d.brandName} — ${d.score}/100 (${deltaLabel})`,
     html: `
       <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; background: #0f172a; color: #e2e8f0; padding: 32px; border-radius: 12px;">
         <h1 style="color: #818cf8; font-size: 20px; margin-bottom: 8px;">Your Weekly AI Visibility Digest</h1>
@@ -85,7 +85,7 @@ export function weeklyDigestEmail(d: DigestData) {
         ${alertsHtml}
         ${actionsHtml}
         <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" style="display:block;background:#6366f1;color:white;text-decoration:none;padding:10px 20px;border-radius:6px;text-align:center;font-size:14px;">View Full Report</a>
-        <p style="font-size:11px;color:#475569;margin-top:20px;text-align:center;">AuraRank — AI Visibility Intelligence · <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings" style="color:#64748b;">Manage email preferences</a></p>
+        <p style="font-size:11px;color:#475569;margin-top:20px;text-align:center;">SEO4AI — AI Visibility Intelligence · <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings" style="color:#64748b;">Manage email preferences</a></p>
       </div>
     `,
   }
@@ -94,10 +94,10 @@ export function weeklyDigestEmail(d: DigestData) {
 export function scanCompleteEmail(brandName: string, score: number, mentions: number, opportunities: number) {
   const scoreColor = score >= 60 ? '#10b981' : score >= 30 ? '#f59e0b' : '#ef4444'
   return {
-    subject: `AuraRank: ${brandName} scored ${score}/100 in AI visibility`,
+    subject: `SEO4AI: ${brandName} scored ${score}/100 in AI visibility`,
     html: `
       <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; background: #0f172a; color: #e2e8f0; padding: 32px; border-radius: 12px;">
-        <h1 style="color: #818cf8; font-size: 20px; margin-bottom: 24px;">AuraRank Scan Complete</h1>
+        <h1 style="color: #818cf8; font-size: 20px; margin-bottom: 24px;">SEO4AI Scan Complete</h1>
         <p style="margin-bottom: 16px;">Your AI visibility scan for <strong style="color: white;">${brandName}</strong> is complete.</p>
         <div style="background: #1e293b; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 16px;">
           <p style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">AI VISIBILITY SCORE</p>
@@ -115,7 +115,7 @@ export function scanCompleteEmail(brandName: string, score: number, mentions: nu
           </div>
         </div>
         <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" style="display: block; background: #6366f1; color: white; text-decoration: none; padding: 10px 20px; border-radius: 6px; text-align: center; font-size: 14px;">View Full Report</a>
-        <p style="font-size: 11px; color: #475569; margin-top: 20px; text-align: center;">AuraRank - AI Visibility Intelligence</p>
+        <p style="font-size: 11px; color: #475569; margin-top: 20px; text-align: center;">SEO4AI - AI Visibility Intelligence</p>
       </div>
     `,
   }
