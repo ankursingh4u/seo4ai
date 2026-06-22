@@ -13,7 +13,9 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'SEO4AI <noreply@bolddev.live>',
+      // Switch to 'SEO4AI <noreply@seo4ai.app>' once seo4ai.app is verified in
+      // Resend — just set EMAIL_FROM in Vercel, no code change needed.
+      from: process.env.EMAIL_FROM || 'SEO4AI <noreply@bolddev.live>',
       to,
       subject,
       html,

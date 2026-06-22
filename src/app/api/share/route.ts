@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     // Generate share URL using base64-encoded scanId
     const token = Buffer.from(scanId).toString('base64url')
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://seo4ai.bolddev.live'
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://seo4ai.app'
     const shareUrl = `${appUrl}/report/${token}`
 
     return NextResponse.json({ shareUrl, token })
