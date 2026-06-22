@@ -627,11 +627,14 @@ export default function DashboardPage() {
   const [compInput, setCompInput] = useState('')
 
   const fetchDashboard = useCallback(async (brandId?: string) => {
+    // Hard timeout so a slow/hung API can never leave the page stuck on the skeleton.
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), 20000)
     try {
       setLoading(true)
       const [dashRes, planRes] = await Promise.all([
-        fetch(`/api/dashboard${brandId ? `?brandId=${brandId}` : ''}`),
-        fetch('/api/user/plan'),
+        fetch(`/api/dashboard${brandId ? `?brandId=${brandId}` : ''}`, { signal: ctrl.signal }),
+        fetch('/api/user/plan', { signal: ctrl.signal }),
       ])
       if (dashRes.status === 401) { window.location.href = '/login'; return }
       if (dashRes.ok) {
@@ -641,8 +644,8 @@ export default function DashboardPage() {
         if (json.hasNoBrands) setShowAddBrand(true)
       }
       if (planRes.ok) setUserPlan(await planRes.json())
-    } catch { /* network error */ }
-    finally { setLoading(false) }
+    } catch { /* network error or timeout */ }
+    finally { clearTimeout(timer); setLoading(false) }
   }, [])
 
   useEffect(() => { fetchDashboard() }, [fetchDashboard])
