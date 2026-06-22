@@ -1,15 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createBrowserClient } from '@supabase/ssr'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { GoogleButton } from '@/components/auth/google-button'
-import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -18,12 +16,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const router = useRouter()
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const [success, setSuccess] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -41,8 +34,8 @@ export default function SignupPage() {
     setLoading(true)
 
     try {
-      // Auto-confirms the user server-side (service role) → no confirmation
-      // email is sent → Supabase's email rate limit never applies.
+      // Server generates a confirmation link and emails it via Resend (real
+      // verification, no Supabase rate limit). User must confirm before login.
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -54,19 +47,44 @@ export default function SignupPage() {
         setLoading(false)
         return
       }
-
-      // Account is already verified — sign in immediately, straight to dashboard.
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
-      if (signInError) {
-        router.push('/login?message=created')
-        return
-      }
-      router.push('/dashboard')
-      router.refresh()
+      setSuccess(true)
+      setLoading(false)
     } catch {
       setError('Sign-up failed. Please try again.')
       setLoading(false)
     }
+  }
+
+  if (success) {
+    return (
+      <Card className="border-stone-200 bg-white">
+        <CardContent className="pt-8 pb-8">
+          <div className="text-center space-y-4">
+            <CheckCircle2 className="h-14 w-14 text-emerald-500 mx-auto" />
+            <h2 className="text-xl font-semibold text-stone-900">Check your email</h2>
+            <div className="bg-stone-100 border border-stone-200 rounded-lg px-4 py-3">
+              <p className="text-stone-900 font-medium text-sm">{email}</p>
+            </div>
+            <p className="text-stone-500 text-sm">
+              We sent a confirmation link to that address. Click it to verify your email and activate your account.
+            </p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-left">
+              <p className="text-amber-700 text-xs font-medium mb-1">Don&apos;t see it?</p>
+              <ul className="text-stone-500 text-xs space-y-1">
+                <li>• Check your spam or junk folder</li>
+                <li>• It can take a minute to arrive</li>
+                <li>• Make sure your email is spelled correctly</li>
+              </ul>
+            </div>
+            <Link href="/login">
+              <Button variant="outline" className="border-stone-200 text-stone-700 hover:bg-stone-100">
+                Go to login
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
