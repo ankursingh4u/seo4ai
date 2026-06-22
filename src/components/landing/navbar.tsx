@@ -27,9 +27,8 @@ export function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <Image src="/logo-mark.png" alt="SEO4AI" width={32} height={32} className="h-8 w-8" priority />
-            <span className="text-xl font-bold tracking-tight text-stone-900">SEO4AI</span>
+          <Link href="/" className="flex items-center shrink-0">
+            <Image src="/logo-wordmark.png" alt="SEO4AI" width={132} height={41} className="h-9 w-auto" priority />
           </Link>
 
           {/* Desktop nav links */}
