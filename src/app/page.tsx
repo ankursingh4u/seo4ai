@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/landing/navbar'
 import { FreeScan } from '@/components/landing/free-scan'
@@ -565,10 +566,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-violet-700 text-white text-sm font-bold">A</span>
-                <span className="font-bold text-stone-900 text-lg">SEO4AI</span>
-              </div>
+              <Image src="/logo.png" alt="SEO4AI — AI Visibility & Brand Intelligence" width={170} height={53} className="h-10 w-auto mb-3" />
               <p className="text-sm text-stone-500 max-w-xs leading-relaxed">
                 The visibility layer for AI search. See whether ChatGPT, Gemini and Perplexity
                 recommend your brand — and fix it.
