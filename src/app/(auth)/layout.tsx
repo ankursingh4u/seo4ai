@@ -7,7 +7,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Link href="/">
-            <Image src="/logo.png" alt="SEO4AI — AI Visibility & Brand Intelligence" width={260} height={81} className="h-16 w-auto" priority />
+            <Image src="/logo.png" alt="SEO4AI, AI Visibility & Brand Intelligence" width={260} height={81} className="h-16 w-auto" priority />
           </Link>
         </div>
         {children}

@@ -46,7 +46,7 @@ export function ExitIntent() {
           <Eye className="h-10 w-10 text-violet-700 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-stone-900 mb-2">Wait! Is AI Ignoring Your Brand?</h2>
           <p className="text-sm text-stone-500 mb-6">
-            90% of businesses are invisible to AI search. Get a free visibility check in 10 seconds — no signup required.
+            90% of businesses are invisible to AI search. Get a free visibility check in 10 seconds, no signup required.
           </p>
           <Link href="#free-scan">
             <Button className="w-full bg-violet-700 hover:bg-violet-800 text-white h-11 text-base" onClick={() => setShow(false)}>

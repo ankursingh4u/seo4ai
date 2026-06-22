@@ -1,12 +1,12 @@
 import { ImageResponse } from 'next/og'
 import { createClient } from '@supabase/supabase-js'
 
-export const alt = 'AI Visibility Report — SEO4AI'
+export const alt = 'AI Visibility Report, SEO4AI'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
 // Dynamic social-share card: every report link renders a branded score card
-// on Twitter/LinkedIn/WhatsApp/Slack — turning shares into free distribution.
+// on Twitter/LinkedIn/WhatsApp/Slack, turning shares into free distribution.
 export default async function Image({ params }: { params: { token: string } }) {
   const fallback = (
     <div

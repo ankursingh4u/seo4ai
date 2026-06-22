@@ -41,8 +41,8 @@ const PLAN_DETAILS = [
   {
     key: 'pro',
     name: 'Pro',
-    price: 9,
-    priceLabel: '$9',
+    price: 24.99,
+    priceLabel: '$24.99',
     icon: Crown,
     color: 'text-violet-700',
     borderColor: 'border-violet-600/50',
@@ -61,8 +61,8 @@ const PLAN_DETAILS = [
   {
     key: 'max',
     name: 'Max',
-    price: 29,
-    priceLabel: '$29',
+    price: 49.99,
+    priceLabel: '$49.99',
     icon: Sparkles,
     color: 'text-emerald-400',
     borderColor: 'border-emerald-500/30',

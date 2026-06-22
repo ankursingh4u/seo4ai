@@ -126,7 +126,7 @@ function BoostSection({ brandId, plan }: { brandId: string; plan: string }) {
         <CardTitle className="text-xs text-stone-500 uppercase tracking-wide flex items-center gap-1.5">
           <Zap className="h-3.5 w-3.5 text-violet-700" />
           <span className="text-violet-700">Boost My AI Score</span>
-          <span className="text-stone-400 font-normal normal-case text-[10px]">— ready-made content to improve your next scan</span>
+          <span className="text-stone-400 font-normal normal-case text-[10px]">·ready-made content to improve your next scan</span>
           {plan !== 'max' && <Badge className="bg-emerald-500/20 text-emerald-400 text-[9px] ml-1">Max Plan</Badge>}
         </CardTitle>
       </CardHeader>
@@ -134,7 +134,7 @@ function BoostSection({ brandId, plan }: { brandId: string; plan: string }) {
         {!content ? (
           <div className="space-y-3">
             <p className="text-xs text-stone-500">
-              AI models learn from web content. We&apos;ll generate 4 types of content you can add to your website today — FAQ, brand bio, key facts, and schema markup. Expected result: <span className="text-violet-700">+15–25 points</span> on your next scan.
+              AI models learn from web content. We&apos;ll generate 4 types of content you can add to your website today, FAQ, brand bio, key facts, and schema markup. Expected result: <span className="text-violet-700">+15–25 points</span> on your next scan.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {['FAQ Section (8–10 Q&As)', 'Brand Bio Paragraph', '10 Key Facts', 'JSON-LD Schema'].map((item, i) => (
@@ -275,7 +275,7 @@ function OutreachSection({ scanId, plan }: { scanId: string; plan: string }) {
       }
       const { targets: t } = await res.json()
       setTargets(t)
-      toast.success('Outreach drafts ready — send them to get listed.')
+      toast.success('Outreach drafts ready, send them to get listed.')
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Generation failed')
     } finally {
@@ -299,8 +299,8 @@ function OutreachSection({ scanId, plan }: { scanId: string; plan: string }) {
       <CardHeader className="py-3">
         <CardTitle className="text-xs text-stone-500 uppercase tracking-wide flex items-center gap-1.5">
           <Mail className="h-3.5 w-3.5 text-violet-700" />
-          <span className="text-violet-700">Get Listed — Outreach Drafts</span>
-          <span className="text-stone-400 font-normal normal-case text-[10px]">— the off-site fix: get named on the sources AI trusts</span>
+          <span className="text-violet-700">Get Listed, Outreach Drafts</span>
+          <span className="text-stone-400 font-normal normal-case text-[10px]">·the off-site fix: get named on the sources AI trusts</span>
           {plan !== 'max' && <Badge className="bg-emerald-500/20 text-emerald-400 text-[9px] ml-1">Max Plan</Badge>}
         </CardTitle>
       </CardHeader>
@@ -308,7 +308,7 @@ function OutreachSection({ scanId, plan }: { scanId: string; plan: string }) {
         {!targets ? (
           <div className="space-y-3">
             <p className="text-xs text-stone-500">
-              The #1 way to get recommended by AI is to be mentioned on the third-party sources it reads — review sites, &ldquo;best of&rdquo; listicles, and communities. We find the highest-impact ones for you and write a <span className="text-violet-700">ready-to-send pitch</span> for each.
+              The #1 way to get recommended by AI is to be mentioned on the third-party sources it reads, review sites, &ldquo;best of&rdquo; listicles, and communities. We find the highest-impact ones for you and write a <span className="text-violet-700">ready-to-send pitch</span> for each.
             </p>
             <Button
               onClick={generate}
@@ -429,7 +429,7 @@ function PublishSection({ brandId, publishLimit, publishesUsed, canPublish, publ
       return
     }
     if (!canGen) {
-      toast.error(`You've used all ${generationLimit} article generations this period${resetLabel ? ` — resets ${resetLabel}` : ''}`)
+      toast.error(`You've used all ${generationLimit} article generations this period${resetLabel ? `, resets ${resetLabel}` : ''}`)
       return
     }
     if (!brandId) {
@@ -450,7 +450,7 @@ function PublishSection({ brandId, publishLimit, publishesUsed, canPublish, publ
       }
       const { article: a } = await res.json()
       setArticle(a)
-      toast.success('Article ready — review it, then publish.')
+      toast.success('Article ready, review it, then publish.')
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Generation failed')
     } finally {
@@ -504,7 +504,7 @@ function PublishSection({ brandId, publishLimit, publishesUsed, canPublish, publ
         <CardTitle className="text-xs text-stone-500 uppercase tracking-wide flex items-center gap-1.5">
           <FileText className="h-3.5 w-3.5 text-violet-700" />
           <span className="text-violet-700">Write &amp; Publish</span>
-          <span className="text-stone-400 font-normal normal-case text-[10px]">— generate an AI-optimized article and post it to your site</span>
+          <span className="text-stone-400 font-normal normal-case text-[10px]">·generate an AI-optimized article and post it to your site</span>
           {!canUse
             ? <Badge className="bg-violet-500/20 text-violet-700 text-[9px] ml-1">Pro &amp; Max</Badge>
             : <Badge className="bg-stone-200 text-stone-600 text-[9px] ml-1 normal-case font-normal">{generationsUsed}/{generationLimit} articles{resetLabel ? ` · resets ${resetLabel}` : ''}</Badge>}
@@ -514,12 +514,12 @@ function PublishSection({ brandId, publishLimit, publishesUsed, canPublish, publ
         {!article ? (
           <div className="space-y-3">
             <p className="text-xs text-stone-500">
-              Generate an article written the way AI assistants like to read — direct answers, clear headings, FAQ — then publish it straight to your WordPress in one click.
+              Generate an article written the way AI assistants like to read, direct answers, clear headings, FAQ, then publish it straight to your WordPress in one click.
             </p>
             <Input
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="Topic (optional) — e.g. 'how to choose a CRM for a 5-person team'"
+              placeholder="Topic (optional), e.g. 'how to choose a CRM for a 5-person team'"
               className="bg-stone-100 border-stone-200 text-stone-900 text-sm h-9"
             />
             <Button
@@ -532,7 +532,7 @@ function PublishSection({ brandId, publishLimit, publishesUsed, canPublish, publ
             </Button>
             {canUse && !canGen && (
               <p className="text-[11px] text-stone-500">
-                You&apos;ve used all {generationLimit} article generations this period{resetLabel ? ` — resets ${resetLabel}` : ''}.
+                You&apos;ve used all {generationLimit} article generations this period{resetLabel ? `, resets ${resetLabel}` : ''}.
               </p>
             )}
           </div>
@@ -589,7 +589,7 @@ function PublishSection({ brandId, publishLimit, publishesUsed, canPublish, publ
                 </label>
                 <p className="text-[10px] text-stone-500">
                   Live publishes: {publishesUsed}/{publishLimit} this period{resetLabel ? ` · resets ${resetLabel}` : ''}.
-                  {!quotaLeft && <span className="text-amber-600"> Limit reached — &ldquo;Save as draft&rdquo; still works.</span>}
+                  {!quotaLeft && <span className="text-amber-600"> Limit reached, &ldquo;Save as draft&rdquo; still works.</span>}
                 </p>
                 <div className="flex items-center gap-2 pt-1">
                   <select
@@ -947,18 +947,18 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Empty state — improved onboarding */}
+      {/* Empty state, improved onboarding */}
       {!brand && (
         <Card className="bg-white border-stone-200">
           <CardContent className="pt-10 pb-10 text-center">
             <Eye className="h-12 w-12 text-stone-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Is AI sending customers to you — or your competitors?</h2>
+            <h2 className="text-xl font-semibold mb-2">Is AI sending customers to you, or your competitors?</h2>
             <p className="text-stone-500 text-sm mb-2 max-w-md mx-auto">
               We test the exact questions your customers ask ChatGPT, Gemini, and other AI tools, then show you whether your brand comes up in the answers.
             </p>
             <p className="text-stone-500 text-xs mb-6 max-w-sm mx-auto">Takes 30 seconds. No credit card needed to get started.</p>
             <Button className="bg-violet-700 hover:bg-violet-800 h-10" onClick={() => setShowAddBrand(true)}>
-              <Plus className="h-4 w-4 mr-2" /> Find Out Now — Add Your Brand
+              <Plus className="h-4 w-4 mr-2" /> Find Out Now, Add Your Brand
             </Button>
           </CardContent>
         </Card>
@@ -975,9 +975,9 @@ export default function DashboardPage() {
               </button>
               <p className="text-sm font-semibold text-violet-300 mb-2">👋 How to read your results</p>
               <ul className="text-xs text-stone-700 space-y-1.5 pr-6">
-                <li><span className="text-violet-700 font-medium">Visibility Score</span> — how often AI recommends you across real customer questions (0–100).</li>
-                <li><span className="text-violet-700 font-medium">Missed Searches</span> — questions where competitors show up but you don&apos;t. Your biggest opportunities. Click &ldquo;See what AI actually said&rdquo; to read the real answer.</li>
-                <li><span className="text-violet-700 font-medium">Boost My Score</span> — generate ready-to-paste website content that helps AI learn about you (Max plan).</li>
+                <li><span className="text-violet-700 font-medium">Visibility Score</span>, how often AI recommends you across real customer questions (0–100).</li>
+                <li><span className="text-violet-700 font-medium">Missed Searches</span>, questions where competitors show up but you don&apos;t. Your biggest opportunities. Click &ldquo;See what AI actually said&rdquo; to read the real answer.</li>
+                <li><span className="text-violet-700 font-medium">Boost My Score</span>, generate ready-to-paste website content that helps AI learn about you (Max plan).</li>
                 <li>Run another scan after making changes to track your progress over time.</li>
               </ul>
               <button onClick={dismissWalkthrough} className="mt-3 text-xs font-medium text-violet-700 hover:text-violet-300">Got it →</button>
@@ -1006,7 +1006,7 @@ export default function DashboardPage() {
               </div>
               <p className="text-sm text-stone-500">
                 {col === 'emerald'
-                  ? `AI recommends you in ${scan.mention_count} out of ${totalPrompts} test questions. You're doing well — keep it up.`
+                  ? `AI recommends you in ${scan.mention_count} out of ${totalPrompts} test questions. You're doing well, keep it up.`
                   : col === 'amber'
                   ? `AI mentioned you in ${scan.mention_count} out of ${totalPrompts} test questions. There's clear room to improve.`
                   : `AI only mentioned you in ${scan.mention_count} out of ${totalPrompts} test questions. Customers searching AI won't find you.`}
@@ -1114,7 +1114,7 @@ export default function DashboardPage() {
             ) : (
               <Card className="bg-white border-stone-200">
                 <CardContent className="pt-4 pb-4">
-                  <p className="text-2xl font-bold text-stone-500">—</p>
+                  <p className="text-2xl font-bold text-stone-500">–</p>
                   <p className="text-xs font-medium text-stone-700 mt-1">vs Competitors</p>
                   <p className="text-[10px] text-stone-500 mt-0.5">Add competitors when creating brand</p>
                 </CardContent>
@@ -1179,19 +1179,19 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* MISSED OPPORTUNITIES — always visible, first prominent section */}
+          {/* MISSED OPPORTUNITIES, always visible, first prominent section */}
           {(data?.promptOpportunities?.length || 0) > 0 ? (
             <Card className="bg-white border-amber-500/20 border">
               <CardHeader className="py-3">
                 <CardTitle className="text-xs text-stone-500 uppercase tracking-wide flex items-center gap-1.5">
                   <Target className="h-3.5 w-3.5 text-amber-400" />
                   <span className="text-amber-400">Missed Searches ({data!.promptOpportunities.length})</span>
-                  <span className="text-stone-400 font-normal normal-case text-[10px]">— AI recommends competitors here, not you</span>
+                  <span className="text-stone-400 font-normal normal-case text-[10px]">·AI recommends competitors here, not you</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 pb-3 space-y-2">
                 <p className="text-xs text-stone-500 mb-3 bg-stone-100 rounded-lg px-3 py-2">
-                  These are real questions customers ask AI. Your competitors appear in the answers — you don&apos;t. Each one is a customer you&apos;re currently losing to AI recommendations.
+                  These are real questions customers ask AI. Your competitors appear in the answers, you don&apos;t. Each one is a customer you&apos;re currently losing to AI recommendations.
                 </p>
                 {data!.promptOpportunities.map(opp => (
                   <div key={opp.id} className="p-3 bg-stone-100/30 rounded-lg border border-stone-200">
@@ -1251,7 +1251,7 @@ export default function DashboardPage() {
               <div className="space-y-1.5">
                 {scan.visibility_score < 26 && (
                   <p className="text-sm text-stone-700">
-                    When a customer asks AI &ldquo;what&apos;s the best {brand?.industry?.toLowerCase()} option?&rdquo; — your brand is not being mentioned. They&apos;re being sent to your competitors instead.
+                    When a customer asks AI &ldquo;what&apos;s the best {brand?.industry?.toLowerCase()} option?&rdquo;, your brand is not being mentioned. They&apos;re being sent to your competitors instead.
                   </p>
                 )}
                 {scan.visibility_score >= 26 && scan.visibility_score < 66 && (
@@ -1261,7 +1261,7 @@ export default function DashboardPage() {
                 )}
                 {(data?.promptOpportunities?.length || 0) > 0 && (
                   <p className="text-sm text-stone-500">
-                    There are <span className="text-amber-400 font-medium">{data?.promptOpportunities?.length} specific search questions</span> where AI recommends competitors instead of you — each one is a lost customer.
+                    There are <span className="text-amber-400 font-medium">{data?.promptOpportunities?.length} specific search questions</span> where AI recommends competitors instead of you, each one is a lost customer.
                   </p>
                 )}
                 {compStatus === 'behind' && topComp && (
@@ -1273,7 +1273,7 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Charts — always rendered, with placeholders when empty */}
+          {/* Charts, always rendered, with placeholders when empty */}
           <div className={`grid ${data?.competitorAnalysis && data.competitorAnalysis.length > 0 && data?.scanHistory && data.scanHistory.length > 1 ? 'lg:grid-cols-2' : ''} gap-4`}>
             {/* Competitor chart or locked/placeholder */}
             {data?.competitorAnalysis && data.competitorAnalysis.length > 0 && userPlan?.canViewCompetitors ? (
@@ -1357,10 +1357,10 @@ export default function DashboardPage() {
           {/* Boost My Score */}
           <BoostSection brandId={brand?.id || ''} plan={userPlan?.plan || 'free'} />
 
-          {/* Get Listed — off-site outreach drafts */}
+          {/* Get Listed, off-site outreach drafts */}
           <OutreachSection scanId={data?.latestScan?.id || ''} plan={userPlan?.plan || 'free'} />
 
-          {/* Write & Publish — generate article + 1-click WordPress publish */}
+          {/* Write & Publish, generate article + 1-click WordPress publish */}
           <PublishSection
             brandId={brand?.id || ''}
             publishLimit={userPlan?.publishLimit ?? 0}
@@ -1397,7 +1397,7 @@ export default function DashboardPage() {
                     <p className="text-sm text-stone-500 mb-1 max-w-sm mx-auto">
                       Our AI analyzes your scan results and tells you exactly what to do to get recommended more often.
                     </p>
-                    <p className="text-xs text-stone-500 mb-4">Specific actions, priority order, and expected impact — available on Max plan.</p>
+                    <p className="text-xs text-stone-500 mb-4">Specific actions, priority order, and expected impact, available on Max plan.</p>
                     <Button className="bg-emerald-600 hover:bg-emerald-700 h-9 text-sm px-6" onClick={() => window.location.href = '/dashboard/billing'}>
                       Upgrade to Max <ArrowRight className="h-3.5 w-3.5 ml-1" />
                     </Button>

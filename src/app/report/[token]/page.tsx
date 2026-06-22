@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
       .single()
     const name = brand?.brand_name || 'This brand'
     const title = `${name}'s AI Visibility Score: ${scan.visibility_score}/100`
-    const description = `See whether ChatGPT and other AI tools recommend ${name}${brand?.industry ? ` for ${brand.industry}` : ''} — and how it stacks up against competitors. Free AI visibility report by SEO4AI.`
+    const description = `See whether ChatGPT and other AI tools recommend ${name}${brand?.industry ? ` for ${brand.industry}` : ''}, and how it stacks up against competitors. Free AI visibility report by SEO4AI.`
     return {
       title,
       description,
@@ -260,7 +260,7 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
             )}
             {compStatus === 'winning' && topComp && (
               <p className="text-xs text-emerald-400/80 mt-4 bg-emerald-500/5 border border-emerald-500/10 rounded-lg px-3 py-2">
-                {brand.brand_name} is winning — mentioned {scan.mention_count - topComp.mention_count} more times than {topComp.competitor_name}. Keep it up.
+                {brand.brand_name} is winning, mentioned {scan.mention_count - topComp.mention_count} more times than {topComp.competitor_name}. Keep it up.
               </p>
             )}
           </div>
@@ -286,7 +286,7 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
           >
             Check your brand for free →
           </Link>
-          <p className="text-stone-400 text-xs mt-3">Free account — no credit card required</p>
+          <p className="text-stone-400 text-xs mt-3">Free account, no credit card required</p>
         </div>
 
         <div className="text-center border-t border-stone-200 pt-6">

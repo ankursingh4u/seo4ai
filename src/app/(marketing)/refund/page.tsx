@@ -3,7 +3,7 @@ import { AlertTriangle } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Refund Policy',
-  description: 'SEO4AI refund policy — all sales are final.',
+  description: 'SEO4AI refund policy, all sales are final.',
 }
 
 export default function RefundPage() {
@@ -40,7 +40,7 @@ export default function RefundPage() {
         <h2>3. Cancellations</h2>
         <p>
           You can cancel your subscription at any time from your billing settings. Cancellation stops
-          future charges. Your plan stays active until the end of the current billing period — there
+          future charges. Your plan stays active until the end of the current billing period, there
           is <strong>no refund</strong> for the remainder of that period.
         </p>
 
@@ -66,8 +66,8 @@ export default function RefundPage() {
         <h2>7. Contact</h2>
         <p>
           Questions about billing? Email{' '}
-          <a href="mailto:support@seo4ai.app" className="text-violet-700 underline">support@seo4ai.app</a>{' '}
-          — but please note that, per this policy, payments are non-refundable.
+          <a href="mailto:support@seo4ai.app" className="text-violet-700 underline">support@seo4ai.app</a>.{' '}
+          Note that, per this policy, payments are non-refundable.
         </p>
       </div>
     </div>

@@ -48,13 +48,13 @@ export default function LandingPage() {
             <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.05] tracking-tight text-balance">
               Your customers are asking AI.
               <span className="block mt-2 text-violet-700">
-                Is it naming you — or your competitor?
+                Is it naming you, or your competitor?
               </span>
             </h1>
 
             <p className="mt-6 text-lg text-stone-600 leading-relaxed max-w-xl">
               ChatGPT, Gemini and Perplexity now answer &ldquo;what&apos;s the best
-              option?&rdquo; directly — no more ten blue links. We show you whether
+              option?&rdquo; directly, no more ten blue links. We show you whether
               AI recommends your brand, who it picks instead, and exactly what to
               change so it picks you.
             </p>
@@ -64,7 +64,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right: the shock — a live-looking scan result */}
+          {/* Right: the shock, a live-looking scan result */}
           <div className="relative">
             <div className="absolute inset-0 -m-3 rounded-[28px] bg-gradient-to-tr from-violet-600/10 to-transparent pointer-events-none" />
             <div className="relative rounded-2xl border border-stone-200 bg-white shadow-[0_20px_60px_rgba(28,25,23,0.10)] overflow-hidden">
@@ -157,7 +157,7 @@ export default function LandingPage() {
             <p className="mt-4 text-stone-600 leading-relaxed">
               People used to Google, scroll ten links, and click. Now they ask one
               question and trust one answer. If your brand isn&apos;t in that answer,
-              you don&apos;t lose a ranking — you lose the customer entirely, and you
+              you don&apos;t lose a ranking, you lose the customer entirely, and you
               never even see it happen.
             </p>
             <p className="mt-4 text-stone-600 leading-relaxed">
@@ -167,7 +167,7 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { big: 'No ranking', small: 'There are no positions to track — just in, or out.' },
+              { big: 'No ranking', small: 'There are no positions to track, just in, or out.' },
               { big: 'No clicks', small: 'AI answers without sending traffic to your site.' },
               { big: 'No referrer', small: 'You can’t see these lost customers in analytics.' },
               { big: 'No second place', small: 'AI usually names a few brands. Miss the cut, miss it all.' },
@@ -192,7 +192,7 @@ export default function LandingPage() {
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Why does AI recommend some brands and not others?</h2>
             <p className="mt-3 text-stone-600 max-w-2xl mx-auto">
               It&apos;s not random, and it&apos;s not magic. An AI answer is built from two
-              things — and both can be influenced.
+              things, and both can be influenced.
             </p>
           </div>
 
@@ -205,8 +205,8 @@ export default function LandingPage() {
               <h3 className="font-semibold text-lg">1. What the model already learned</h3>
               <p className="mt-2 text-sm text-stone-600 leading-relaxed">
                 Models like ChatGPT were trained on a huge slice of the web. A brand
-                that&apos;s mentioned often, on sources the model trusts — review
-                sites, &ldquo;best of&rdquo; lists, news, communities — gets
+                that&apos;s mentioned often, on sources the model trusts, review
+                sites, &ldquo;best of&rdquo; lists, news, communities, gets
                 &ldquo;remembered&rdquo; and named in answers. Mentioned nowhere?
                 The model simply doesn&apos;t know you exist.
               </p>
@@ -218,8 +218,8 @@ export default function LandingPage() {
               <h3 className="font-semibold text-lg">2. What it reads live, right now</h3>
               <p className="mt-2 text-sm text-stone-600 leading-relaxed">
                 Newer assistants (Perplexity, AI Overviews, ChatGPT Search) pull
-                live web pages while answering and cite them. If your page — or a
-                page that names you — is clear, structured and trusted, it gets
+                live web pages while answering and cite them. If your page, or a
+                page that names you, is clear, structured and trusted, it gets
                 pulled into the answer. This is the part you can move fastest.
               </p>
             </div>
@@ -243,9 +243,9 @@ export default function LandingPage() {
                 <div className="max-w-[90%] rounded-2xl rounded-bl-sm bg-stone-100 text-stone-800 px-4 py-3 text-sm leading-relaxed">
                   <p>For a small team, the most recommended options are:</p>
                   <ul className="mt-2 space-y-1">
-                    <li>1. <span className="font-semibold">Trello</span> — simple and visual</li>
-                    <li>2. <span className="font-semibold">Asana</span> — great for workflows</li>
-                    <li>3. <span className="font-semibold">ClickUp</span> — all-in-one</li>
+                    <li>1. <span className="font-semibold">Trello</span>, simple and visual</li>
+                    <li>2. <span className="font-semibold">Asana</span>, great for workflows</li>
+                    <li>3. <span className="font-semibold">ClickUp</span>, all-in-one</li>
                   </ul>
                 </div>
               </div>
@@ -261,7 +261,7 @@ export default function LandingPage() {
                   <p className="mt-1.5 text-sm text-stone-600 leading-relaxed">
                     Those three weren&apos;t picked by luck. They appear because
                     they&apos;re named across the review sites, listicles and threads
-                    the model trusts — so it learned them as &ldquo;the answer.&rdquo;
+                    the model trusts, so it learned them as &ldquo;the answer.&rdquo;
                     If you&apos;re not on those sources, you&apos;re not in the
                     conversation, no matter how good your product is.
                   </p>
@@ -297,7 +297,7 @@ export default function LandingPage() {
               <p className="mt-6 text-sm text-stone-600">
                 <span className="font-semibold text-stone-900">That&apos;s the whole game.</span>{' '}
                 We measure exactly where you stand across these sources, show you who&apos;s
-                winning and why, and hand you the specific fixes — on your site and off it —
+                winning and why, and hand you the specific fixes, on your site and off it,
                 to get into the answer.
               </p>
             </div>
@@ -310,7 +310,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Find. Fix. Prove.</h2>
-            <p className="mt-3 text-stone-600">Not just a diagnosis — the whole loop, end to end.</p>
+            <p className="mt-3 text-stone-600">Not just a diagnosis, the whole loop, end to end.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
@@ -319,7 +319,7 @@ export default function LandingPage() {
                 desc: 'We ask AI the real questions your customers ask and record whether you appear, who beats you, and on which engine.',
               },
               {
-                icon: Target, step: '02', title: 'Fix it — on-site & off-site',
+                icon: Target, step: '02', title: 'Fix it, on-site & off-site',
                 desc: 'We generate the on-site content AI needs (FAQ, schema, comparisons) and surface the third-party pages naming competitors so you can get listed too.',
               },
               {
@@ -348,7 +348,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Most AI-SEO tools stop at the easy half.</h2>
             <p className="mt-3 text-stone-600 max-w-2xl mx-auto">
-              They write a blog and publish it to your own website — then call it
+              They write a blog and publish it to your own website, then call it
               done. But that&apos;s the part AI trusts least. The real wins are
               off your site.
             </p>
@@ -360,13 +360,13 @@ export default function LandingPage() {
               <p className="text-sm font-semibold text-stone-500 mb-4">Typical AI-SEO tool</p>
               <ul className="space-y-3 text-sm text-stone-600">
                 {[
-                  'Publishes blogs to your own site — and stops there',
+                  'Publishes blogs to your own site, and stops there',
                   'Ignores the third-party sources AI actually cites',
                   'Often $89+ / month',
                   'Implies AI visibility happens fast',
                 ].map((t) => (
                   <li key={t} className="flex gap-2">
-                    <span className="text-stone-300 mt-0.5 shrink-0">—</span>{t}
+                    <span className="text-stone-300 mt-0.5 shrink-0">•</span>{t}
                   </li>
                 ))}
               </ul>
@@ -377,10 +377,10 @@ export default function LandingPage() {
               <p className="text-sm font-semibold text-violet-700 mb-4">SEO4AI</p>
               <ul className="space-y-3 text-sm text-stone-700">
                 {[
-                  'Publishes to your site too — in one click',
+                  'Publishes to your site too, in one click',
                   'AND shows you the off-site sources AI trusts, with outreach to get listed',
-                  'Free to start · up to $29 / month',
-                  'Honest: it takes weeks — here’s the real work, on-site and off',
+                  'Free to start · up to $49.99 / month',
+                  'Honest: it takes weeks, here’s the real work, on-site and off',
                 ].map((t) => (
                   <li key={t} className="flex gap-2">
                     <Check className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />{t}
@@ -398,7 +398,7 @@ export default function LandingPage() {
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">One brand. Every AI answer engine.</h2>
           <p className="mt-3 text-stone-600 max-w-2xl mx-auto">
             Your customers don&apos;t use just one assistant. Track your brand across
-            all of them — and unlock the citation-based engines that reveal <em>why</em>
+            all of them, and unlock the citation-based engines that reveal <em>why</em>
             competitors win.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -432,15 +432,15 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Everything you need to win the answer</h2>
-            <p className="mt-3 text-stone-600">Measurement and the fix — in one place.</p>
+            <p className="mt-3 text-stone-600">Measurement and the fix, in one place.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
               { icon: Search, title: 'AI Visibility Score', desc: 'A clear 0–100 score for how often AI names your brand, weighted by position and sentiment.' },
               { icon: Target, title: 'Competitor gap', desc: 'See exactly which competitors AI picks instead of you, and on which questions.' },
-              { icon: Quote, title: 'Off-site opportunity finder', desc: 'The review sites, listicles and communities AI trusts in your category — and a plan to get you listed on them.' },
-              { icon: FileText, title: 'Write & publish', desc: 'Generate AI-optimized articles and publish them to your WordPress in one click — plus FAQ and schema for AI to read.' },
-              { icon: ShieldCheck, title: 'Prioritised fix plan', desc: 'Ranked, specific actions by impact and effort — what to do first, and why.' },
+              { icon: Quote, title: 'Off-site opportunity finder', desc: 'The review sites, listicles and communities AI trusts in your category, and a plan to get you listed on them.' },
+              { icon: FileText, title: 'Write & publish', desc: 'Generate AI-optimized articles and publish them to your WordPress in one click, plus FAQ and schema for AI to read.' },
+              { icon: ShieldCheck, title: 'Prioritised fix plan', desc: 'Ranked, specific actions by impact and effort, what to do first, and why.' },
               { icon: TrendingUp, title: 'Progress tracking', desc: 'Re-scan over time and prove your visibility actually moved.' },
             ].map((f) => (
               <div key={f.title} className="rounded-2xl border border-stone-200 bg-white p-6 hover:border-violet-200 transition-colors">
@@ -458,7 +458,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto rounded-3xl border border-stone-200 bg-white p-8 sm:p-12">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">No magic. Just the truth, and the work.</h2>
           <p className="mt-4 text-stone-600 leading-relaxed">
-            Getting recommended by AI takes weeks, not minutes — anyone promising an
+            Getting recommended by AI takes weeks, not minutes, anyone promising an
             instant fix is selling you something. Here&apos;s exactly what we do, and
             what we don&apos;t pretend to:
           </p>
@@ -474,7 +474,7 @@ export default function LandingPage() {
             <div>
               <p className="text-sm font-semibold text-stone-500 mb-3">We&apos;re honest about</p>
               <ul className="space-y-2.5 text-sm text-stone-600">
-                {['No tool can edit an AI model’s memory directly', 'Some wins are outreach we hand you ready-to-send', 'Durable visibility builds over weeks', 'We show the path — you (or we) walk it'].map((t) => (
+                {['No tool can edit an AI model’s memory directly', 'Some wins are outreach we hand you ready-to-send', 'Durable visibility builds over weeks', 'We show the path, you (or we) walk it'].map((t) => (
                   <li key={t} className="flex gap-2"><span className="text-stone-400 shrink-0 mt-0.5">•</span>{t}</li>
                 ))}
               </ul>
@@ -566,10 +566,10 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <Image src="/logo.png" alt="SEO4AI — AI Visibility & Brand Intelligence" width={170} height={53} className="h-10 w-auto mb-3" />
+              <Image src="/logo.png" alt="SEO4AI, AI Visibility & Brand Intelligence" width={170} height={53} className="h-10 w-auto mb-3" />
               <p className="text-sm text-stone-500 max-w-xs leading-relaxed">
                 The visibility layer for AI search. See whether ChatGPT, Gemini and Perplexity
-                recommend your brand — and fix it.
+                recommend your brand, and fix it.
               </p>
             </div>
 

@@ -14,7 +14,7 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
     },
     body: JSON.stringify({
       // Switch to 'SEO4AI <noreply@seo4ai.app>' once seo4ai.app is verified in
-      // Resend — just set EMAIL_FROM in Vercel, no code change needed.
+      // Resend, just set EMAIL_FROM in Vercel, no code change needed.
       from: process.env.EMAIL_FROM || 'SEO4AI <noreply@bolddev.live>',
       to,
       subject,
@@ -64,7 +64,7 @@ export function weeklyDigestEmail(d: DigestData) {
     : ''
 
   return {
-    subject: `SEO4AI weekly: ${d.brandName} — ${d.score}/100 (${deltaLabel})`,
+    subject: `SEO4AI weekly: ${d.brandName}, ${d.score}/100 (${deltaLabel})`,
     html: `
       <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; background: #0f172a; color: #e2e8f0; padding: 32px; border-radius: 12px;">
         <h1 style="color: #818cf8; font-size: 20px; margin-bottom: 8px;">Your Weekly AI Visibility Digest</h1>
@@ -87,7 +87,7 @@ export function weeklyDigestEmail(d: DigestData) {
         ${alertsHtml}
         ${actionsHtml}
         <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" style="display:block;background:#6366f1;color:white;text-decoration:none;padding:10px 20px;border-radius:6px;text-align:center;font-size:14px;">View Full Report</a>
-        <p style="font-size:11px;color:#475569;margin-top:20px;text-align:center;">SEO4AI — AI Visibility Intelligence · <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings" style="color:#64748b;">Manage email preferences</a></p>
+        <p style="font-size:11px;color:#475569;margin-top:20px;text-align:center;">SEO4AI, AI Visibility Intelligence · <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings" style="color:#64748b;">Manage email preferences</a></p>
       </div>
     `,
   }

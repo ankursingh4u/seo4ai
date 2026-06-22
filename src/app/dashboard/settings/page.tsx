@@ -148,7 +148,7 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Automation — Scheduled Auto-Scans */}
+      {/* Automation, Scheduled Auto-Scans */}
       <Card className="bg-white border-stone-200 mb-6">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">

@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     const region = brand.market_region?.city || brand.market_region?.state || brand.market_region?.country || ''
     const competitors = Array.isArray(brand.competitors) ? brand.competitors.join(', ') : ''
 
-    const systemPrompt = `You are an answer-engine-optimization (AEO) writer. You write articles designed to be read, trusted, and cited by AI assistants (ChatGPT, Gemini, Perplexity). Your articles use clear question-style H2 headings, give the direct answer first, use short paragraphs and lists, include a "Frequently Asked Questions" section, and mention the brand naturally and factually. Never invent fake statistics, awards, or testimonials.`
+    const systemPrompt = `You are an answer-engine-optimization (AEO) writer. You write articles designed to be read, trusted, and cited by AI assistants (ChatGPT, Gemini, Perplexity). Your articles use clear question-style H2 headings, give the direct answer first, use short paragraphs and lists, include a "Frequently Asked Questions" section, and mention the brand naturally and factually. Never invent fake statistics, awards, or testimonials. Do not use em dashes or en dashes (the "—" or "–" characters) anywhere; use commas, colons, or periods instead.`
 
     const userPrompt = `Write one publish-ready article for this brand.
 

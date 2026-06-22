@@ -37,11 +37,11 @@ export default function PrivacyPage() {
         <h2>3. Service providers we use</h2>
         <p>We share data only as needed with trusted processors that power the Service:</p>
         <ul>
-          <li><strong>Supabase</strong> — authentication and database.</li>
-          <li><strong>OpenAI</strong> — AI model queries and content generation.</li>
-          <li><strong>Resend</strong> — transactional email delivery.</li>
-          <li><strong>Vercel</strong> — hosting and infrastructure.</li>
-          <li><strong>Payment processor</strong> — subscription billing.</li>
+          <li><strong>Supabase</strong>, authentication and database.</li>
+          <li><strong>OpenAI</strong>, AI model queries and content generation.</li>
+          <li><strong>Resend</strong>, transactional email delivery.</li>
+          <li><strong>Vercel</strong>, hosting and infrastructure.</li>
+          <li><strong>Payment processor</strong>, subscription billing.</li>
         </ul>
         <p>We do not sell your personal information.</p>
 

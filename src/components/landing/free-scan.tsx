@@ -66,7 +66,7 @@ export function FreeScan() {
           ) : (
             <>
               <Search className="h-4 w-4 mr-2" />
-              Scan my AI visibility — free
+              Scan my AI visibility, free
             </>
           )}
         </Button>
