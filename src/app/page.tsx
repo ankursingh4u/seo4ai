@@ -16,12 +16,12 @@ function XIcon({ className }: { className?: string }) {
   )
 }
 
-// The engines we measure against. ChatGPT is live today; the rest are the
-// roadmap shown as "soon" so the vision is visible without overclaiming.
+// The engines we measure against. ChatGPT, Gemini and Claude are live; the rest
+// are the roadmap shown as "soon".
 const ENGINES = [
   { name: 'ChatGPT', live: true },
   { name: 'Gemini', live: true },
-  { name: 'Claude', live: false },
+  { name: 'Claude', live: true },
   { name: 'Perplexity', live: false },
   { name: 'AI Overviews', live: false },
   { name: 'Grok', live: false },
@@ -499,12 +499,12 @@ export default function LandingPage() {
               {
                 name: 'Pro', price: '$24.99', suffix: '/mo', engines: 'ChatGPT + Gemini',
                 highlight: true, badge: 'Most popular',
-                features: ['3 brands', '15 scans / month', 'ChatGPT + Gemini engines', 'Competitor gap analysis', 'Off-site opportunity finder', 'Progress history'],
+                features: ['3 brands', '15 scans / month', 'ChatGPT + Gemini engines', 'Competitor gap analysis', 'Off-site opportunity finder', 'Write & publish to WordPress (1 / month)', 'Progress history'],
               },
               {
                 name: 'Max', price: '$49.99', suffix: '/mo', engines: 'ChatGPT + Gemini + Claude',
                 highlight: false, badge: 'Full power',
-                features: ['10 brands', '60 scans / month', 'All engines (+ more soon)', 'Write & 1-click publish to WordPress', 'Fix plan + outreach drafts', 'Priority support'],
+                features: ['10 brands', '60 scans / month', 'ChatGPT + Gemini + Claude engines', 'Write & 1-click publish to WordPress (3 / month)', 'Fix plan + outreach drafts', 'Priority support'],
               },
             ].map((p) => (
               <div

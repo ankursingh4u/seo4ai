@@ -39,6 +39,19 @@ export async function GET() {
       .gte('created_at', startOfMonth.toISOString())
     const scanCount = count || 0
 
+    // Publish quota resets on the billing period (fallback: rolling 30 days).
+    const periodStart = (userPlan as { current_period_start?: string | null } | null)?.current_period_start
+      ? new Date((userPlan as { current_period_start: string }).current_period_start)
+      : (() => { const d = new Date(); d.setDate(d.getDate() - 30); return d })()
+
+    const { count: publishCount } = await supabase
+      .from('wordpress_publishes')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('published_at', periodStart.toISOString())
+    const publishesUsed = publishCount || 0
+    const publishLimit = planConfig.publishLimit ?? 0
+
     return NextResponse.json({
       plan,
       status: userPlan?.status || 'active',
@@ -50,6 +63,11 @@ export async function GET() {
       canAddBrand: brandIds.length < planConfig.brandLimit,
       canViewCompetitors: plan !== 'starter',
       canViewFixPlan: plan === 'max',
+      publishLimit,
+      publishesUsed,
+      publishesRemaining: Math.max(0, publishLimit - publishesUsed),
+      canPublish: publishLimit > 0 && publishesUsed < publishLimit,
+      publishResetsAt: (userPlan as { current_period_end?: string | null } | null)?.current_period_end || null,
     })
   } catch {
     return NextResponse.json({
@@ -63,6 +81,11 @@ export async function GET() {
       canAddBrand: true,
       canViewCompetitors: false,
       canViewFixPlan: false,
+      publishLimit: 0,
+      publishesUsed: 0,
+      publishesRemaining: 0,
+      canPublish: false,
+      publishResetsAt: null,
     })
   }
 }

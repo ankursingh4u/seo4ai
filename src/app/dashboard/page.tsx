@@ -372,7 +372,15 @@ interface GeneratedArticle {
   contentHtml: string
 }
 
-function PublishSection({ brandId, plan }: { brandId: string; plan: string }) {
+function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesRemaining, canPublish, publishResetsAt }: {
+  brandId: string
+  plan: string
+  publishLimit: number
+  publishesUsed: number
+  publishesRemaining: number
+  canPublish: boolean
+  publishResetsAt: string | null
+}) {
   const [topic, setTopic] = useState('')
   const [generating, setGenerating] = useState(false)
   const [article, setArticle] = useState<GeneratedArticle | null>(null)
@@ -385,7 +393,9 @@ function PublishSection({ brandId, plan }: { brandId: string; plan: string }) {
   const [remember, setRemember] = useState(true)
   const [savedConn, setSavedConn] = useState(false)
 
-  const isMax = plan === 'max'
+  const canUse = publishLimit > 0          // Pro or Max may publish at all
+  const quotaLeft = canPublish             // has a publish remaining this period
+  const resetLabel = publishResetsAt ? new Date(publishResetsAt).toLocaleDateString() : ''
   const storageKey = brandId ? `seo4ai-wp-${brandId}` : ''
 
   // Load any saved WordPress connection for this brand (stored locally, per device).
@@ -411,9 +421,13 @@ function PublishSection({ brandId, plan }: { brandId: string; plan: string }) {
   }
 
   async function generate() {
-    if (!isMax) {
-      toast.error('Upgrade to Max plan to generate & publish articles')
+    if (!canUse) {
+      toast.error('Upgrade to Pro or Max to generate & publish articles')
       window.location.href = '/dashboard/billing'
+      return
+    }
+    if (!quotaLeft) {
+      toast.error(`You've used all ${publishLimit} of your publishes this period${resetLabel ? ` — resets ${resetLabel}` : ''}`)
       return
     }
     if (!brandId) {
@@ -454,7 +468,7 @@ function PublishSection({ brandId, plan }: { brandId: string; plan: string }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          siteUrl, username, appPassword,
+          siteUrl, username, appPassword, brandId,
           title: article.title,
           contentHtml: article.contentHtml,
           excerpt: article.excerpt,
@@ -489,7 +503,9 @@ function PublishSection({ brandId, plan }: { brandId: string; plan: string }) {
           <FileText className="h-3.5 w-3.5 text-violet-700" />
           <span className="text-violet-700">Write &amp; Publish</span>
           <span className="text-stone-400 font-normal normal-case text-[10px]">— generate an AI-optimized article and post it to your site</span>
-          {!isMax && <Badge className="bg-emerald-500/20 text-emerald-400 text-[9px] ml-1">Max Plan</Badge>}
+          {!canUse
+            ? <Badge className="bg-violet-500/20 text-violet-700 text-[9px] ml-1">Pro &amp; Max</Badge>
+            : <Badge className="bg-stone-200 text-stone-600 text-[9px] ml-1 normal-case font-normal">{publishesUsed}/{publishLimit} used{resetLabel ? ` · resets ${resetLabel}` : ''}</Badge>}
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0 pb-4 space-y-3">
@@ -506,12 +522,17 @@ function PublishSection({ brandId, plan }: { brandId: string; plan: string }) {
             />
             <Button
               onClick={generate}
-              disabled={generating}
-              className={`h-9 text-sm px-6 ${isMax ? 'bg-violet-700 hover:bg-violet-800' : 'bg-stone-200 hover:bg-stone-300 text-stone-700'}`}
+              disabled={generating || (canUse && !quotaLeft)}
+              className={`h-9 text-sm px-6 ${canUse && quotaLeft ? 'bg-violet-700 hover:bg-violet-800' : 'bg-stone-200 hover:bg-stone-300 text-stone-700'}`}
             >
               {generating ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" /> : <FileText className="h-3.5 w-3.5 mr-2" />}
-              {generating ? 'Writing...' : isMax ? 'Generate Article' : 'Upgrade to Generate'}
+              {generating ? 'Writing...' : !canUse ? 'Upgrade to Generate' : !quotaLeft ? 'Publish limit reached' : 'Generate Article'}
             </Button>
+            {canUse && !quotaLeft && (
+              <p className="text-[11px] text-stone-500">
+                You&apos;ve used all {publishLimit} of your WordPress publishes for this period{resetLabel ? ` — resets ${resetLabel}` : ''}.
+              </p>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
@@ -597,7 +618,7 @@ export default function DashboardPage() {
   const [savingBrand, setSavingBrand] = useState(false)
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
   const [showFixPlan, setShowFixPlan] = useState(false)
-  const [userPlan, setUserPlan] = useState<{ plan: string; canScan: boolean; canViewCompetitors: boolean; canViewFixPlan: boolean; scansUsed: number; scanLimit: number; brandLimit: number } | null>(null)
+  const [userPlan, setUserPlan] = useState<{ plan: string; canScan: boolean; canViewCompetitors: boolean; canViewFixPlan: boolean; scansUsed: number; scanLimit: number; brandLimit: number; publishLimit: number; publishesUsed: number; publishesRemaining: number; canPublish: boolean; publishResetsAt: string | null } | null>(null)
   const [discoveringComps, setDiscoveringComps] = useState(false)
   const [showScoreInfo, setShowScoreInfo] = useState(false)
   const [showWalkthrough, setShowWalkthrough] = useState(false)
@@ -1334,7 +1355,15 @@ export default function DashboardPage() {
           <OutreachSection scanId={data?.latestScan?.id || ''} plan={userPlan?.plan || 'free'} />
 
           {/* Write & Publish — generate article + 1-click WordPress publish */}
-          <PublishSection brandId={brand?.id || ''} plan={userPlan?.plan || 'free'} />
+          <PublishSection
+            brandId={brand?.id || ''}
+            plan={userPlan?.plan || 'free'}
+            publishLimit={userPlan?.publishLimit ?? 0}
+            publishesUsed={userPlan?.publishesUsed ?? 0}
+            publishesRemaining={userPlan?.publishesRemaining ?? 0}
+            canPublish={userPlan?.canPublish ?? false}
+            publishResetsAt={userPlan?.publishResetsAt ?? null}
+          />
 
           {/* Fix Plan */}
           <Card className="bg-white border-stone-200">

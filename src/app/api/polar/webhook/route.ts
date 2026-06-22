@@ -73,6 +73,19 @@ export async function POST(request: NextRequest) {
           status: mapStatus(sub.status),
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' })
+
+        // Anchor the publish quota to the billing period. On renewal Polar moves
+        // currentPeriodStart forward, which resets the publish count for free.
+        // Done as a separate, best-effort update so it's a no-op if the
+        // add_wordpress_publishes.sql migration hasn't added these columns yet
+        // (mirrors why polar_customer_id is kept out of the upsert above).
+        const periodStart = sub.currentPeriodStart ? new Date(sub.currentPeriodStart).toISOString() : null
+        const periodEnd = sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toISOString() : null
+        if (periodStart || periodEnd) {
+          await supabase.from('user_plans')
+            .update({ current_period_start: periodStart, current_period_end: periodEnd })
+            .eq('user_id', userId)
+        }
       }
       break
     }

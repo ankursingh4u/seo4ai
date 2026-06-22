@@ -1,5 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
+import { PLANS } from '@/lib/payment'
 import { NextRequest, NextResponse } from 'next/server'
+
+// Start of the user's current publish window: the billing period start when we
+// have it, otherwise a rolling 30 days. The quota counts publishes since this.
+function periodStartFor(userPlan: { current_period_start?: string | null } | null): Date {
+  if (userPlan?.current_period_start) return new Date(userPlan.current_period_start)
+  const d = new Date()
+  d.setDate(d.getDate() - 30)
+  return d
+}
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
@@ -20,14 +30,35 @@ export async function POST(request: NextRequest) {
 
     const { data: userPlan } = await supabase
       .from('user_plans')
-      .select('plan')
+      .select('*')
       .eq('user_id', user.id)
       .single()
-    if ((userPlan?.plan || 'starter') !== 'max') {
-      return NextResponse.json({ error: 'Upgrade to Max plan to publish.' }, { status: 403 })
+
+    const plan = (userPlan?.plan as keyof typeof PLANS) || 'starter'
+    const publishLimit = PLANS[plan]?.publishLimit ?? 0
+    if (publishLimit <= 0) {
+      return NextResponse.json({ error: 'Upgrade to Pro or Max to publish to WordPress.' }, { status: 403 })
     }
 
-    const { siteUrl, username, appPassword, title, contentHtml, excerpt, status } = await request.json()
+    // Enforce the per-period publish quota (Pro 1 / Max 3) before we post.
+    const periodStart = periodStartFor(userPlan)
+    const { count: usedCount } = await supabase
+      .from('wordpress_publishes')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('published_at', periodStart.toISOString())
+
+    if ((usedCount || 0) >= publishLimit) {
+      const resetMsg = userPlan?.current_period_end
+        ? ` It resets on ${new Date(userPlan.current_period_end).toLocaleDateString()}.`
+        : ''
+      return NextResponse.json(
+        { error: `You've used all ${publishLimit} of your WordPress publishes for this period.${resetMsg}` },
+        { status: 403 }
+      )
+    }
+
+    const { siteUrl, username, appPassword, title, contentHtml, excerpt, status, brandId } = await request.json()
 
     if (!siteUrl || !username || !appPassword || !title || !contentHtml) {
       return NextResponse.json({ error: 'siteUrl, username, appPassword, title and content are required' }, { status: 400 })
@@ -86,6 +117,17 @@ export async function POST(request: NextRequest) {
     }
 
     const post = await wpRes.json()
+
+    // Record the successful publish so it counts against the quota.
+    await supabase.from('wordpress_publishes').insert({
+      user_id: user.id,
+      brand_id: brandId || null,
+      wordpress_post_id: post.id ?? null,
+      title,
+      link: post.link ?? null,
+      status: post.status ?? postStatus,
+    })
+
     return NextResponse.json({
       id: post.id,
       link: post.link,
