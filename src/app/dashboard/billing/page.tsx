@@ -26,8 +26,8 @@ const PLAN_DETAILS = [
     price: 0,
     priceLabel: 'Free',
     icon: Zap,
-    color: 'text-slate-400',
-    borderColor: 'border-slate-800',
+    color: 'text-stone-500',
+    borderColor: 'border-stone-200',
     features: [
       { text: '1 brand', included: true },
       { text: '3 scans per month', included: true },
@@ -44,8 +44,8 @@ const PLAN_DETAILS = [
     price: 9,
     priceLabel: '$9',
     icon: Crown,
-    color: 'text-indigo-400',
-    borderColor: 'border-indigo-500/50',
+    color: 'text-violet-700',
+    borderColor: 'border-violet-600/50',
     popular: true,
     features: [
       { text: '3 brands', included: true },
@@ -133,9 +133,9 @@ function BillingContent() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-8 w-32 bg-slate-800 rounded animate-pulse" />
+        <div className="h-8 w-32 bg-stone-100 rounded animate-pulse" />
         <div className="grid md:grid-cols-3 gap-4">
-          {[1,2,3].map(i => <div key={i} className="h-80 bg-slate-800/50 rounded-xl animate-pulse" />)}
+          {[1,2,3].map(i => <div key={i} className="h-80 bg-stone-100 rounded-xl animate-pulse" />)}
         </div>
       </div>
     )
@@ -147,10 +147,10 @@ function BillingContent() {
     <div>
       <div className="mb-6">
         <h1 className="text-xl font-bold">Billing & Plans</h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Current plan: <Badge className="bg-indigo-500/20 text-indigo-400 ml-1">{currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)}</Badge>
+        <p className="text-stone-500 text-sm mt-1">
+          Current plan: <Badge className="bg-violet-500/20 text-violet-700 ml-1">{currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)}</Badge>
           {planInfo && (
-            <span className="ml-3 text-slate-500">
+            <span className="ml-3 text-stone-500">
               {planInfo.scansUsed}/{planInfo.scanLimit} scans used this month
             </span>
           )}
@@ -169,7 +169,7 @@ function BillingContent() {
           const isSubscribed = currentPlan !== 'starter'
 
           return (
-            <Card key={plan.key} className={`bg-slate-900/50 flex flex-col ${isCurrent ? 'ring-2 ring-indigo-500/50' : ''} ${plan.borderColor}`}>
+            <Card key={plan.key} className={`bg-white flex flex-col ${isCurrent ? 'ring-2 ring-violet-600/50' : ''} ${plan.borderColor}`}>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-base">
@@ -180,12 +180,12 @@ function BillingContent() {
                     <Badge className="bg-emerald-600/20 text-emerald-400 border-emerald-500/30 text-[10px]">Current</Badge>
                   )}
                   {'popular' in plan && plan.popular && !isCurrent && (
-                    <Badge className="bg-indigo-600/20 text-indigo-400 border-indigo-500/30 text-[10px]">Popular</Badge>
+                    <Badge className="bg-violet-700/20 text-violet-700 border-violet-500/30 text-[10px]">Popular</Badge>
                   )}
                 </div>
                 <div className="mt-1">
                   <span className="text-2xl font-bold">{plan.priceLabel}</span>
-                  {plan.price > 0 && <span className="text-slate-500 text-sm">/mo</span>}
+                  {plan.price > 0 && <span className="text-stone-500 text-sm">/mo</span>}
                 </div>
               </CardHeader>
 
@@ -196,32 +196,32 @@ function BillingContent() {
                       {f.included ? (
                         <Check className="h-3.5 w-3.5 text-emerald-400 mt-0.5 shrink-0" />
                       ) : (
-                        <X className="h-3.5 w-3.5 text-slate-600 mt-0.5 shrink-0" />
+                        <X className="h-3.5 w-3.5 text-stone-400 mt-0.5 shrink-0" />
                       )}
-                      <span className={f.included ? 'text-slate-300' : 'text-slate-600'}>{f.text}</span>
+                      <span className={f.included ? 'text-stone-700' : 'text-stone-400'}>{f.text}</span>
                     </li>
                   ))}
                 </ul>
 
                 {isCurrent ? (
                   isSubscribed ? (
-                    <Button variant="outline" className="w-full border-slate-700 text-slate-400 h-8 text-xs" onClick={handleManage}>
+                    <Button variant="outline" className="w-full border-stone-200 text-stone-500 h-8 text-xs" onClick={handleManage}>
                       <ExternalLink className="h-3 w-3 mr-1" /> Manage Subscription
                     </Button>
                   ) : (
-                    <Button variant="outline" disabled className="w-full border-slate-700 text-slate-500 h-8 text-xs">
+                    <Button variant="outline" disabled className="w-full border-stone-200 text-stone-500 h-8 text-xs">
                       Free Plan
                     </Button>
                   )
                 ) : isSubscribed ? (
                   // Existing subscriber switching plans → portal (handles proration)
-                  <Button variant="outline" className="w-full border-slate-700 text-slate-300 hover:bg-slate-800 h-8 text-xs" onClick={handleManage}>
+                  <Button variant="outline" className="w-full border-stone-200 text-stone-700 hover:bg-stone-100 h-8 text-xs" onClick={handleManage}>
                     <ExternalLink className="h-3 w-3 mr-1" /> {isUpgrade ? `Upgrade to ${plan.name}` : `Switch to ${plan.name}`}
                   </Button>
                 ) : (
                   // Brand-new (starter) user → checkout
                   <Button
-                    className={`w-full h-8 text-xs ${plan.key === 'max' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-indigo-600 hover:bg-indigo-700'} text-white`}
+                    className={`w-full h-8 text-xs ${plan.key === 'max' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-violet-700 hover:bg-violet-800'} text-white`}
                     onClick={() => handleUpgrade(plan.key)}
                     disabled={checkoutLoading === plan.key}
                   >
@@ -240,7 +240,7 @@ function BillingContent() {
 
 export default function BillingPage() {
   return (
-    <Suspense fallback={<div className="h-8 w-32 bg-slate-800 rounded animate-pulse" />}>
+    <Suspense fallback={<div className="h-8 w-32 bg-stone-100 rounded animate-pulse" />}>
       <BillingContent />
     </Suspense>
   )

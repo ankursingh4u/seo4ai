@@ -1,351 +1,578 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/landing/navbar'
 import { FreeScan } from '@/components/landing/free-scan'
 import {
-  Search, BarChart3, Target, TrendingUp, Shield,
-  ArrowRight, Check, Eye, Bot, Brain, Lightbulb, Sparkles
+  ArrowRight, Check, Lock, Search, Target, FileText,
+  TrendingUp, ShieldCheck, Sparkles, AlertTriangle, Quote,
+  Database, Globe, MessageSquare, Star,
 } from 'lucide-react'
 
 function XIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
       <path d="M18 6L6 18M6 6l12 12" />
     </svg>
   )
 }
 
+// The engines we measure against. ChatGPT is live today; the rest are the
+// roadmap shown as "soon" so the vision is visible without overclaiming.
+const ENGINES = [
+  { name: 'ChatGPT', live: true },
+  { name: 'Gemini', live: false },
+  { name: 'Perplexity', live: false },
+  { name: 'Claude', live: false },
+  { name: 'AI Overviews', live: false },
+  { name: 'Grok', live: false },
+  { name: 'Copilot', live: false },
+]
+
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-[#FBF8F4] text-stone-900 antialiased">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/50 via-slate-950 to-slate-950 pointer-events-none" />
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative max-w-5xl mx-auto text-center">
-          <Badge variant="outline" className="border-indigo-500/30 text-indigo-400 mb-6 px-4 py-1.5">
-            <Sparkles className="h-3 w-3 mr-1.5" />
-            Google Search Console for AI Search
-          </Badge>
-
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            Is AI Recommending{' '}
-            <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-              Your Brand?
-            </span>
-          </h1>
-
-          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-            ChatGPT, Gemini, and Perplexity are replacing Google Search.
-            When customers ask AI &ldquo;what&apos;s the best option?&rdquo; — are you in the answer?
-            SEO4AI finds out, shows you who&apos;s winning, and tells you exactly what to fix.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <a href="#free-scan">
-              <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-12 text-base w-full sm:w-auto">
-                Check My Brand Free <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </a>
-            <a href="#how-it-works">
-              <Button size="lg" variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 px-8 h-12 text-base w-full sm:w-auto">
-                See How It Works
-              </Button>
-            </a>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-8 text-sm text-slate-500">
-            <div className="flex items-center gap-2">
-              <Bot className="h-4 w-4 text-indigo-400" />
-              <span>AI-Powered Search Testing</span>
+      {/* ───────────────────────── Hero ───────────────────────── */}
+      <section className="relative overflow-hidden pt-28 pb-20 px-4">
+        <div className="absolute -top-40 right-0 h-[500px] w-[500px] rounded-full bg-violet-200/40 blur-3xl pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          {/* Left: copy + scan */}
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-3 py-1 text-xs font-medium text-stone-600 mb-6">
+              <Sparkles className="h-3 w-3 text-violet-700" />
+              The visibility layer for AI search
             </div>
-            <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-indigo-400" />
-              <span>20+ Customer Search Questions</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Lightbulb className="h-4 w-4 text-indigo-400" />
-              <span>Personalized Fix Plans</span>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.05] tracking-tight text-balance">
+              Your customers are asking AI.
+              <span className="block mt-2 text-violet-700">
+                Is it naming you — or your competitor?
+              </span>
+            </h1>
+
+            <p className="mt-6 text-lg text-stone-600 leading-relaxed max-w-xl">
+              ChatGPT, Gemini and Perplexity now answer &ldquo;what&apos;s the best
+              option?&rdquo; directly — no more ten blue links. We show you whether
+              AI recommends your brand, who it picks instead, and exactly what to
+              change so it picks you.
+            </p>
+
+            <div className="mt-8">
+              <FreeScan />
             </div>
           </div>
 
-          {/* Free Scan */}
-          <div id="free-scan" className="mt-12 scroll-mt-24">
-            <p className="text-sm text-slate-400 mb-4">Try it now — no account needed</p>
-            <FreeScan />
+          {/* Right: the shock — a live-looking scan result */}
+          <div className="relative">
+            <div className="absolute inset-0 -m-3 rounded-[28px] bg-gradient-to-tr from-violet-600/10 to-transparent pointer-events-none" />
+            <div className="relative rounded-2xl border border-stone-200 bg-white shadow-[0_20px_60px_rgba(28,25,23,0.10)] overflow-hidden">
+              {/* window chrome */}
+              <div className="flex items-center gap-1.5 border-b border-stone-100 px-4 py-3">
+                <span className="h-2.5 w-2.5 rounded-full bg-stone-200" />
+                <span className="h-2.5 w-2.5 rounded-full bg-stone-200" />
+                <span className="h-2.5 w-2.5 rounded-full bg-stone-200" />
+                <span className="ml-3 text-[11px] text-stone-400">AI Visibility Report · live</span>
+              </div>
+
+              <div className="p-5">
+                {/* score headline */}
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4 mb-4">
+                  <div className="flex items-center gap-2 text-red-600 mb-1">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span className="text-xs font-semibold uppercase tracking-wide">Invisible to AI</span>
+                  </div>
+                  <div className="flex items-end gap-3">
+                    <span className="text-5xl font-bold text-red-600 leading-none">8%</span>
+                    <span className="text-sm text-stone-500 pb-1">visibility score</span>
+                  </div>
+                  <p className="mt-2 text-sm text-stone-600">
+                    Your brand was named in <span className="font-semibold text-red-600">1 of 12</span> questions
+                    customers ask AI. The rest went to competitors.
+                  </p>
+                </div>
+
+                {/* you vs competitor bars */}
+                <div className="space-y-3 mb-4">
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-stone-500">Your brand</span>
+                      <span className="font-semibold text-red-600">8%</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-stone-100"><div className="h-2 rounded-full bg-red-500" style={{ width: '8%' }} /></div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-stone-500">Top competitor</span>
+                      <span className="font-semibold text-emerald-600">84%</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-stone-100"><div className="h-2 rounded-full bg-emerald-500" style={{ width: '84%' }} /></div>
+                  </div>
+                </div>
+
+                {/* prompt rows */}
+                <div className="space-y-1.5">
+                  {[
+                    { q: '“best CRM for startups”', win: false },
+                    { q: '“top CRM software 2026”', win: false },
+                    { q: '“which CRM should I use”', win: false },
+                  ].map((r) => (
+                    <div key={r.q} className="flex items-center gap-2 rounded-lg bg-stone-50 px-3 py-2 text-sm">
+                      <XIcon className="h-3.5 w-3.5 text-red-500 shrink-0" />
+                      <span className="text-stone-600 truncate">{r.q}</span>
+                      <span className="ml-auto text-[11px] text-red-500 shrink-0">not mentioned</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* engine chips */}
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {ENGINES.map((e) => (
+                    <span
+                      key={e.name}
+                      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] ${
+                        e.live
+                          ? 'border-violet-200 bg-violet-50 text-violet-700'
+                          : 'border-stone-200 bg-stone-50 text-stone-400'
+                      }`}
+                    >
+                      {!e.live && <Lock className="h-2.5 w-2.5" />}
+                      {e.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p className="mt-3 text-center text-xs text-stone-400">Example report. Run yours to see your real numbers.</p>
           </div>
         </div>
       </section>
 
-      {/* Problem Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">The Problem</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              AI is fundamentally changing how people discover products and services.
-              Traditional SEO tools can&apos;t help you here.
+      {/* ───────────────────── The shift (problem) ───────────────────── */}
+      <section className="px-4 py-16 border-y border-stone-200 bg-white">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Search didn&apos;t die. It moved.</h2>
+            <p className="mt-4 text-stone-600 leading-relaxed">
+              People used to Google, scroll ten links, and click. Now they ask one
+              question and trust one answer. If your brand isn&apos;t in that answer,
+              you don&apos;t lose a ranking — you lose the customer entirely, and you
+              never even see it happen.
+            </p>
+            <p className="mt-4 text-stone-600 leading-relaxed">
+              Traditional SEO tools can&apos;t measure this. They watch Google&apos;s
+              blue links. We watch the answer itself.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="bg-slate-900/50 border-slate-800">
-              <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold text-red-400 mb-3">Traditional Search (Declining)</h3>
-                <p className="text-slate-400 text-sm mb-4">User searches Google, sees 10 blue links, clicks to your website.</p>
-                <ul className="space-y-2 text-sm text-slate-500">
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-slate-600" /> You can track rankings</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-slate-600" /> You can measure clicks</li>
-                  <li className="flex items-center gap-2"><Check className="h-3 w-3 text-slate-600" /> You can optimize content</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-slate-900/50 border-indigo-500/30 ring-1 ring-indigo-500/20">
-              <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold text-indigo-400 mb-3">AI Search (Growing Fast)</h3>
-                <p className="text-slate-400 text-sm mb-4">User asks AI, gets a direct answer with brand recommendations. No clicks needed.</p>
-                <ul className="space-y-2 text-sm text-slate-500">
-                  <li className="flex items-center gap-2"><XIcon className="h-3 w-3 text-red-500" /> No visibility into rankings</li>
-                  <li className="flex items-center gap-2"><XIcon className="h-3 w-3 text-red-500" /> No idea why competitors chosen</li>
-                  <li className="flex items-center gap-2"><XIcon className="h-3 w-3 text-red-500" /> No optimization strategy</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how-it-works" className="py-20 px-4 bg-slate-900/30">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">How It Works</h2>
-            <p className="text-slate-400">Four simple steps to AI visibility</p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 gap-4">
             {[
-              { step: '01', title: 'Set Up Your Brand', desc: 'Add your brand name, industry, and up to 3 competitors to track.', icon: Shield },
-              { step: '02', title: 'AI Tests Your Visibility', desc: 'We ask AI the exact questions your customers ask — and record whether your brand appears.', icon: Search },
-              { step: '03', title: 'Get Your Score', desc: 'See your AI Visibility Score out of 100 with detailed breakdown.', icon: BarChart3 },
-              { step: '04', title: 'Follow Fix Plan', desc: 'Get actionable recommendations to improve your AI visibility.', icon: Lightbulb },
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-indigo-500/10 border border-indigo-500/20 mb-4">
-                  <item.icon className="h-6 w-6 text-indigo-400" />
-                </div>
-                <div className="text-xs text-indigo-400 font-mono mb-2">STEP {item.step}</div>
-                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-400">{item.desc}</p>
+              { big: 'No ranking', small: 'There are no positions to track — just in, or out.' },
+              { big: 'No clicks', small: 'AI answers without sending traffic to your site.' },
+              { big: 'No referrer', small: 'You can’t see these lost customers in analytics.' },
+              { big: 'No second place', small: 'AI usually names a few brands. Miss the cut, miss it all.' },
+            ].map((c) => (
+              <div key={c.big} className="rounded-xl border border-stone-200 bg-[#FBF8F4] p-4">
+                <p className="text-lg font-bold text-violet-700">{c.big}</p>
+                <p className="mt-1 text-sm text-stone-600">{c.small}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-16 px-4">
+      {/* ──────────── Education: how AI decides who to recommend ──────────── */}
+      <section id="why" className="px-4 py-20">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-sm text-slate-400 uppercase tracking-wide">Trusted by growing brands</p>
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-3 py-1 text-xs font-medium text-stone-600 mb-4">
+              <Sparkles className="h-3 w-3 text-violet-700" />
+              How it really works
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Why does AI recommend some brands and not others?</h2>
+            <p className="mt-3 text-stone-600 max-w-2xl mx-auto">
+              It&apos;s not random, and it&apos;s not magic. An AI answer is built from two
+              things — and both can be influenced.
+            </p>
+          </div>
+
+          {/* The two doors */}
+          <div className="grid md:grid-cols-2 gap-5 mb-10">
+            <div className="rounded-2xl border border-stone-200 bg-white p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100 text-violet-700 mb-4">
+                <Database className="h-5 w-5" />
+              </span>
+              <h3 className="font-semibold text-lg">1. What the model already learned</h3>
+              <p className="mt-2 text-sm text-stone-600 leading-relaxed">
+                Models like ChatGPT were trained on a huge slice of the web. A brand
+                that&apos;s mentioned often, on sources the model trusts — review
+                sites, &ldquo;best of&rdquo; lists, news, communities — gets
+                &ldquo;remembered&rdquo; and named in answers. Mentioned nowhere?
+                The model simply doesn&apos;t know you exist.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-stone-200 bg-white p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100 text-violet-700 mb-4">
+                <Globe className="h-5 w-5" />
+              </span>
+              <h3 className="font-semibold text-lg">2. What it reads live, right now</h3>
+              <p className="mt-2 text-sm text-stone-600 leading-relaxed">
+                Newer assistants (Perplexity, AI Overviews, ChatGPT Search) pull
+                live web pages while answering and cite them. If your page — or a
+                page that names you — is clear, structured and trusted, it gets
+                pulled into the answer. This is the part you can move fastest.
+              </p>
+            </div>
+          </div>
+
+          {/* Worked example with proof */}
+          <div className="rounded-3xl border border-stone-200 bg-white overflow-hidden">
+            <div className="border-b border-stone-100 px-6 py-3 text-xs text-stone-500 flex items-center gap-2">
+              <MessageSquare className="h-3.5 w-3.5 text-violet-700" />
+              Worked example · how a real AI answer is built
+            </div>
+            <div className="p-6 sm:p-8">
+              {/* user question */}
+              <div className="flex justify-end mb-4">
+                <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-violet-700 text-white px-4 py-2.5 text-sm">
+                  What&apos;s the best project management tool for a small team?
+                </div>
+              </div>
+              {/* AI answer */}
+              <div className="flex justify-start mb-2">
+                <div className="max-w-[90%] rounded-2xl rounded-bl-sm bg-stone-100 text-stone-800 px-4 py-3 text-sm leading-relaxed">
+                  <p>For a small team, the most recommended options are:</p>
+                  <ul className="mt-2 space-y-1">
+                    <li>1. <span className="font-semibold">Trello</span> — simple and visual</li>
+                    <li>2. <span className="font-semibold">Asana</span> — great for workflows</li>
+                    <li>3. <span className="font-semibold">ClickUp</span> — all-in-one</li>
+                  </ul>
+                </div>
+              </div>
+              <p className="text-xs text-stone-400 mb-6">Illustrative example of a typical AI answer.</p>
+
+              {/* the why */}
+              <div className="grid sm:grid-cols-[auto_1fr] gap-4 items-start rounded-2xl bg-[#FBF8F4] border border-stone-200 p-5">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-600">
+                  <AlertTriangle className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-stone-900">Notice what&apos;s missing: your brand.</p>
+                  <p className="mt-1.5 text-sm text-stone-600 leading-relaxed">
+                    Those three weren&apos;t picked by luck. They appear because
+                    they&apos;re named across the review sites, listicles and threads
+                    the model trusts — so it learned them as &ldquo;the answer.&rdquo;
+                    If you&apos;re not on those sources, you&apos;re not in the
+                    conversation, no matter how good your product is.
+                  </p>
+                </div>
+              </div>
+
+              {/* where answers come from */}
+              <div className="mt-6">
+                <p className="text-xs font-medium uppercase tracking-wide text-stone-400 mb-3">Where that answer came from</p>
+                <div className="flex flex-col sm:flex-row items-stretch gap-2">
+                  <div className="flex-1 grid grid-cols-2 gap-2">
+                    {[
+                      { icon: Star, label: 'Review sites' },
+                      { icon: FileText, label: '“Best of” listicles' },
+                      { icon: MessageSquare, label: 'Communities & forums' },
+                      { icon: Globe, label: 'Your own site' },
+                    ].map((s) => (
+                      <div key={s.label} className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-xs text-stone-600">
+                        <s.icon className="h-3.5 w-3.5 text-violet-700 shrink-0" />
+                        {s.label}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-center text-stone-300">
+                    <ArrowRight className="h-5 w-5 rotate-90 sm:rotate-0" />
+                  </div>
+                  <div className="flex items-center justify-center rounded-xl bg-violet-700 text-white px-5 py-3 text-sm font-medium text-center">
+                    The AI&apos;s answer
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-6 text-sm text-stone-600">
+                <span className="font-semibold text-stone-900">That&apos;s the whole game.</span>{' '}
+                We measure exactly where you stand across these sources, show you who&apos;s
+                winning and why, and hand you the specific fixes — on your site and off it —
+                to get into the answer.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────── How it works ───────────────────── */}
+      <section id="how-it-works" className="px-4 py-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Find. Fix. Prove.</h2>
+            <p className="mt-3 text-stone-600">Not just a diagnosis — the whole loop, end to end.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
-                quote: "We discovered we were invisible on ChatGPT. After following SEO4AI's fix plan, we went from 0 to mentioned in 8/10 prompts.",
-                name: 'Sarah K.',
-                role: 'SaaS Founder',
+                icon: Search, step: '01', title: 'Find the gap',
+                desc: 'We ask AI the real questions your customers ask and record whether you appear, who beats you, and on which engine.',
               },
               {
-                quote: "Our competitor was getting all the AI recommendations. SEO4AI showed us exactly what to fix. Our visibility score went from 12 to 67 in 6 weeks.",
-                name: 'Mike R.',
-                role: 'Agency Owner',
+                icon: Target, step: '02', title: 'Fix it — on-site & off-site',
+                desc: 'We generate the on-site content AI needs (FAQ, schema, comparisons) and surface the third-party pages naming competitors so you can get listed too.',
               },
               {
-                quote: "As a local restaurant, we had no idea AI was sending customers to our competitors. SEO4AI's regional targeting changed everything.",
-                name: 'Priya M.',
-                role: 'Restaurant Owner',
+                icon: TrendingUp, step: '03', title: 'Prove it moved',
+                desc: 'Re-scan and watch your visibility score climb. Real before/after, not promises.',
               },
-            ].map((testimonial) => (
-              <Card key={testimonial.name} className="bg-slate-900/50 border-slate-800">
-                <CardContent className="pt-6">
-                  <div className="flex gap-0.5 mb-3">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg key={star} className="h-4 w-4 text-amber-400 fill-amber-400" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-sm text-slate-300 leading-relaxed mb-4">&ldquo;{testimonial.quote}&rdquo;</p>
-                  <div>
-                    <p className="text-sm font-semibold text-white">{testimonial.name}</p>
-                    <p className="text-xs text-slate-500">{testimonial.role}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          <div className="flex justify-center gap-8 mt-12 text-slate-600 text-sm">
-            <span>500+ brands tracked</span>
-            <span>10,000+ AI scans</span>
-            <span>4 AI models monitored</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Everything You Need</h2>
-            <p className="text-slate-400">Comprehensive AI visibility intelligence</p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { icon: Eye, title: 'AI Visibility Score', desc: 'Get a clear score out of 100 showing how visible your brand is across AI models.' },
-              { icon: Target, title: 'Competitor Gap Analysis', desc: 'See exactly how often competitors are mentioned vs your brand across all prompts.' },
-              { icon: Search, title: 'Prompt Opportunity Detection', desc: 'Discover prompts where competitors appear but you don\'t — your biggest opportunities.' },
-              { icon: Lightbulb, title: 'AI Fix Plan', desc: 'Get specific, actionable recommendations to improve your AI visibility with priority ratings.' },
-              { icon: TrendingUp, title: 'Progress Tracking', desc: 'Monitor your AI visibility score over time and see the impact of your optimization efforts.' },
-              { icon: Bot, title: 'Real Customer Questions', desc: 'We test the exact prompts your customers use — not generic queries. Real signal, real results.' },
-            ].map((feature) => (
-              <Card key={feature.title} className="bg-slate-900/50 border-slate-800 hover:border-slate-700 transition-colors">
-                <CardContent className="pt-6">
-                  <feature.icon className="h-8 w-8 text-indigo-400 mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed">{feature.desc}</p>
-                </CardContent>
-              </Card>
+            ].map((s) => (
+              <div key={s.step} className="rounded-2xl border border-stone-200 bg-white p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100 text-violet-700">
+                    <s.icon className="h-5 w-5" />
+                  </span>
+                  <span className="text-sm font-mono text-stone-300">{s.step}</span>
+                </div>
+                <h3 className="text-lg font-semibold">{s.title}</h3>
+                <p className="mt-2 text-sm text-stone-600 leading-relaxed">{s.desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 bg-slate-900/30">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Simple Pricing</h2>
-            <p className="text-slate-400">Start free, upgrade when you need more</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto items-stretch">
-            {[
-              {
-                name: 'Starter', price: 'Free', priceSuffix: 'forever',
-                border: 'border-slate-800', btn: 'outline' as const, btnClass: 'border-slate-700 text-slate-300 hover:bg-slate-800', btnText: 'Get Started Free',
-                features: [
-                  { text: '1 brand', on: true },
-                  { text: '3 scans per month', on: true },
-                  { text: 'AI Visibility Score', on: true },
-                  { text: 'Region targeting', on: true },
-                  { text: 'Competitor scores', on: false },
-                  { text: 'AI Fix Plan', on: false },
-                  { text: 'Boost content generator', on: false },
-                ],
-              },
-              {
-                name: 'Pro', price: '$9', priceSuffix: '/month', badge: 'Most Popular', badgeClass: 'bg-indigo-600',
-                border: 'border-indigo-500/50 ring-1 ring-indigo-500/20', btn: 'default' as const, btnClass: 'bg-indigo-600 hover:bg-indigo-700 text-white', btnText: 'Get Started',
-                features: [
-                  { text: '3 brands', on: true },
-                  { text: '15 scans per month', on: true },
-                  { text: 'AI Visibility Score', on: true },
-                  { text: 'Competitor gap scores', on: true, highlight: true },
-                  { text: 'Region targeting', on: true },
-                  { text: 'Progress history', on: true },
-                  { text: 'AI Fix Plan', on: false },
-                ],
-              },
-              {
-                name: 'Max', price: '$29', priceSuffix: '/month', badge: 'Best Value', badgeClass: 'bg-emerald-600',
-                border: 'border-emerald-500/30 ring-1 ring-emerald-500/10', btn: 'default' as const, btnClass: 'bg-emerald-600 hover:bg-emerald-700 text-white', btnText: 'Get Started',
-                features: [
-                  { text: '10 brands', on: true },
-                  { text: '60 scans per month', on: true },
-                  { text: 'Competitor gap scores', on: true },
-                  { text: 'AI Fix Plan', on: true, highlight: true },
-                  { text: 'Boost content generator', on: true, highlight: true },
-                  { text: 'Export reports', on: true },
-                  { text: 'Priority support', on: true },
-                ],
-              },
-            ].map((plan) => (
-              <Card key={plan.name} className={`bg-slate-900/50 ${plan.border} flex flex-col`}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{plan.name}</CardTitle>
-                    {plan.badge && (
-                      <Badge className={`${plan.badgeClass} text-white border-0 text-xs`}>{plan.badge}</Badge>
-                    )}
-                  </div>
-                  <div className="mt-2">
-                    <span className="text-3xl font-bold">{plan.price}</span>
-                    <span className="text-slate-500"> {plan.priceSuffix}</span>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex flex-col flex-1">
-                  <ul className="space-y-3 text-sm text-slate-400 flex-1 mb-6">
-                    {plan.features.map((f, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        {f.on
-                          ? <Check className="h-4 w-4 text-emerald-400 shrink-0" />
-                          : <XIcon className="h-4 w-4 text-slate-600 shrink-0" />}
-                        <span className={f.on ? ('highlight' in f && f.highlight ? 'text-white font-medium' : 'text-slate-300') : 'text-slate-600'}>{f.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href="/signup" className="block mt-auto">
-                    <Button variant={plan.btn} className={`w-full ${plan.btnClass}`}>
-                      {plan.btnText}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="bg-gradient-to-br from-indigo-950/80 to-violet-950/80 border border-indigo-500/20 rounded-2xl p-12">
-            <Brain className="h-12 w-12 text-indigo-400 mx-auto mb-6" />
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Start Tracking Your AI Visibility Today
-            </h2>
-            <p className="text-slate-400 mb-8 max-w-lg mx-auto">
-              Don&apos;t let competitors dominate AI recommendations. Discover your visibility score and get a personalized fix plan.
+      {/* ───────────────────── The difference ───────────────────── */}
+      <section className="px-4 py-20 bg-white border-y border-stone-200">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Most AI-SEO tools stop at the easy half.</h2>
+            <p className="mt-3 text-stone-600 max-w-2xl mx-auto">
+              They write a blog and publish it to your own website — then call it
+              done. But that&apos;s the part AI trusts least. The real wins are
+              off your site.
             </p>
-            <Link href="/signup">
-              <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-12 text-base">
-                Start Free Scan <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-5">
+            {/* them */}
+            <div className="rounded-2xl border border-stone-200 bg-[#FBF8F4] p-6">
+              <p className="text-sm font-semibold text-stone-500 mb-4">Typical AI-SEO tool</p>
+              <ul className="space-y-3 text-sm text-stone-600">
+                {[
+                  'Publishes blogs to your own site — and stops there',
+                  'Ignores the third-party sources AI actually cites',
+                  'Often $89+ / month',
+                  'Implies AI visibility happens fast',
+                ].map((t) => (
+                  <li key={t} className="flex gap-2">
+                    <span className="text-stone-300 mt-0.5 shrink-0">—</span>{t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* us */}
+            <div className="rounded-2xl border border-violet-300 ring-2 ring-violet-200 bg-white p-6">
+              <p className="text-sm font-semibold text-violet-700 mb-4">SEO4AI</p>
+              <ul className="space-y-3 text-sm text-stone-700">
+                {[
+                  'Publishes to your site too — in one click',
+                  'AND shows you the off-site sources AI trusts, with outreach to get listed',
+                  'Free to start · up to $29 / month',
+                  'Honest: it takes weeks — here’s the real work, on-site and off',
+                ].map((t) => (
+                  <li key={t} className="flex gap-2">
+                    <Check className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />{t}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800 py-12 px-4">
+      {/* ───────────────────── Engines ───────────────────── */}
+      <section id="engines" className="px-4 py-20 bg-white border-y border-stone-200">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">One brand. Every AI answer engine.</h2>
+          <p className="mt-3 text-stone-600 max-w-2xl mx-auto">
+            Your customers don&apos;t use just one assistant. Track your brand across
+            all of them — and unlock the citation-based engines that reveal <em>why</em>
+            competitors win.
+          </p>
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
+            {ENGINES.map((e) => (
+              <div
+                key={e.name}
+                className={`flex items-center gap-2 rounded-xl border px-4 py-3 ${
+                  e.live
+                    ? 'border-violet-200 bg-violet-50'
+                    : 'border-stone-200 bg-[#FBF8F4]'
+                }`}
+              >
+                <span className={`text-sm font-semibold ${e.live ? 'text-violet-700' : 'text-stone-500'}`}>
+                  {e.name}
+                </span>
+                {e.live ? (
+                  <span className="rounded-full bg-violet-700 px-2 py-0.5 text-[10px] font-medium text-white">Live</span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-stone-200 px-2 py-0.5 text-[10px] font-medium text-stone-500">
+                    <Lock className="h-2.5 w-2.5" /> Soon
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────── Features ───────────────────── */}
+      <section id="features" className="px-4 py-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Everything you need to win the answer</h2>
+            <p className="mt-3 text-stone-600">Measurement and the fix — in one place.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { icon: Search, title: 'AI Visibility Score', desc: 'A clear 0–100 score for how often AI names your brand, weighted by position and sentiment.' },
+              { icon: Target, title: 'Competitor gap', desc: 'See exactly which competitors AI picks instead of you, and on which questions.' },
+              { icon: Quote, title: 'Off-site opportunity finder', desc: 'The review sites, listicles and communities AI trusts in your category — and a plan to get you listed on them.' },
+              { icon: FileText, title: 'Write & publish', desc: 'Generate AI-optimized articles and publish them to your WordPress in one click — plus FAQ and schema for AI to read.' },
+              { icon: ShieldCheck, title: 'Prioritised fix plan', desc: 'Ranked, specific actions by impact and effort — what to do first, and why.' },
+              { icon: TrendingUp, title: 'Progress tracking', desc: 'Re-scan over time and prove your visibility actually moved.' },
+            ].map((f) => (
+              <div key={f.title} className="rounded-2xl border border-stone-200 bg-white p-6 hover:border-violet-200 transition-colors">
+                <f.icon className="h-7 w-7 text-violet-700 mb-3" />
+                <h3 className="font-semibold">{f.title}</h3>
+                <p className="mt-1.5 text-sm text-stone-600 leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────── Honesty / trust ───────────────────── */}
+      <section className="px-4 py-16">
+        <div className="max-w-4xl mx-auto rounded-3xl border border-stone-200 bg-white p-8 sm:p-12">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">No magic. Just the truth, and the work.</h2>
+          <p className="mt-4 text-stone-600 leading-relaxed">
+            Getting recommended by AI takes weeks, not minutes — anyone promising an
+            instant fix is selling you something. Here&apos;s exactly what we do, and
+            what we don&apos;t pretend to:
+          </p>
+          <div className="mt-8 grid sm:grid-cols-2 gap-6">
+            <div>
+              <p className="text-sm font-semibold text-emerald-700 mb-3">We do this for you</p>
+              <ul className="space-y-2.5 text-sm text-stone-600">
+                {['Measure your visibility across AI engines', 'Pinpoint every gap vs competitors', 'Show the exact pages AI cites', 'Generate the on-site content AI needs', 'Draft the outreach to get you listed', 'Re-scan to prove it worked'].map((t) => (
+                  <li key={t} className="flex gap-2"><Check className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />{t}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-stone-500 mb-3">We&apos;re honest about</p>
+              <ul className="space-y-2.5 text-sm text-stone-600">
+                {['No tool can edit an AI model’s memory directly', 'Some wins are outreach we hand you ready-to-send', 'Durable visibility builds over weeks', 'We show the path — you (or we) walk it'].map((t) => (
+                  <li key={t} className="flex gap-2"><span className="text-stone-400 shrink-0 mt-0.5">•</span>{t}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────── Pricing ───────────────────── */}
+      <section id="pricing" className="px-4 py-20 bg-white border-y border-stone-200">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Start free. Upgrade for more engines.</h2>
+            <p className="mt-3 text-stone-600">The more engines you track, the more of the picture you see.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 items-stretch">
+            {[
+              {
+                name: 'Starter', price: 'Free', suffix: 'forever', engines: '1 engine (ChatGPT)',
+                highlight: false,
+                features: ['1 brand', '3 scans / month', 'AI Visibility Score', 'Competitor gap (basic)'],
+              },
+              {
+                name: 'Pro', price: '$9', suffix: '/mo', engines: '3 engines (rolling out)',
+                highlight: true, badge: 'Most popular',
+                features: ['3 brands', '15 scans / month', 'Perplexity + Gemini (soon)', 'Off-site opportunity finder', 'Progress history'],
+              },
+              {
+                name: 'Max', price: '$29', suffix: '/mo', engines: 'All engines (rolling out)',
+                highlight: false, badge: 'Full power',
+                features: ['10 brands', '60 scans / month', '+ Claude, Grok, Copilot (soon)', 'Write & 1-click publish to WordPress', 'Fix plan + outreach drafts', 'Priority support'],
+              },
+            ].map((p) => (
+              <div
+                key={p.name}
+                className={`flex flex-col rounded-2xl border bg-[#FBF8F4] p-6 ${
+                  p.highlight ? 'border-violet-300 ring-2 ring-violet-200 bg-white' : 'border-stone-200'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">{p.name}</h3>
+                  {p.badge && (
+                    <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium ${p.highlight ? 'bg-violet-700 text-white' : 'bg-stone-200 text-stone-600'}`}>
+                      {p.badge}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-3">
+                  <span className="text-4xl font-bold">{p.price}</span>
+                  <span className="text-stone-500"> {p.suffix}</span>
+                </div>
+                <p className="mt-2 text-sm font-medium text-violet-700">{p.engines}</p>
+                <ul className="mt-5 space-y-2.5 text-sm text-stone-600 flex-1">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />{f}</li>
+                  ))}
+                </ul>
+                <Link href="/signup" className="mt-6">
+                  <Button
+                    className={`w-full ${p.highlight ? 'bg-violet-700 hover:bg-violet-800 text-white' : 'bg-stone-900 hover:bg-stone-800 text-white'}`}
+                  >
+                    {p.price === 'Free' ? 'Get started free' : `Choose ${p.name}`}
+                  </Button>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────── Final CTA ───────────────────── */}
+      <section className="px-4 py-24">
+        <div className="max-w-3xl mx-auto text-center rounded-3xl bg-violet-700 px-6 py-14 text-white">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Find out what AI says about you</h2>
+          <p className="mt-4 text-violet-100 max-w-lg mx-auto">
+            It takes 60 seconds. You might be fine. You might be invisible. Either
+            way, you should know before your competitor does.
+          </p>
+          <Link href="/signup" className="inline-block mt-8">
+            <Button size="lg" className="bg-white text-violet-700 hover:bg-violet-50 h-12 px-8 text-base font-semibold">
+              Run my free scan <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* ───────────────────── Footer ───────────────────── */}
+      <footer className="border-t border-stone-200 px-4 py-12">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            SEO4AI
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-violet-700 text-white text-xs font-bold">A</span>
+            <span className="font-bold text-stone-900">SEO4AI</span>
           </div>
-          <div className="flex gap-8 text-sm text-slate-500">
-            <a href="#features" className="hover:text-white transition-colors">Features</a>
-            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-            <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
+          <div className="flex gap-8 text-sm text-stone-500">
+            <a href="#how-it-works" className="hover:text-stone-900 transition-colors">How it works</a>
+            <a href="#engines" className="hover:text-stone-900 transition-colors">Engines</a>
+            <a href="#pricing" className="hover:text-stone-900 transition-colors">Pricing</a>
           </div>
-          <p className="text-sm text-slate-600">&copy; 2025 SEO4AI. All rights reserved.</p>
+          <p className="text-sm text-stone-400">&copy; 2026 SEO4AI. All rights reserved.</p>
         </div>
       </footer>
     </div>

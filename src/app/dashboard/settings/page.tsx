@@ -96,20 +96,20 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold mb-8">Settings</h1>
 
       {/* Profile */}
-      <Card className="bg-slate-900/50 border-slate-800 mb-6">
+      <Card className="bg-white border-stone-200 mb-6">
         <CardHeader>
           <CardTitle className="text-lg">Profile</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-slate-300">Email</Label>
-            <Input value={email} disabled className="bg-slate-800 border-slate-700 text-slate-400" />
+            <Label className="text-stone-700">Email</Label>
+            <Input value={email} disabled className="bg-stone-100 border-stone-200 text-stone-500" />
           </div>
         </CardContent>
       </Card>
 
       {/* Change Password */}
-      <Card className="bg-slate-900/50 border-slate-800 mb-6">
+      <Card className="bg-white border-stone-200 mb-6">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Lock className="h-4 w-4" /> Change Password
@@ -118,7 +118,7 @@ export default function SettingsPage() {
         <CardContent>
           <form onSubmit={handleChangePassword} className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-slate-300">New Password</Label>
+              <Label className="text-stone-700">New Password</Label>
               <Input
                 type="password"
                 value={newPassword}
@@ -126,21 +126,21 @@ export default function SettingsPage() {
                 placeholder="Min. 8 characters"
                 required
                 minLength={8}
-                className="bg-slate-800 border-slate-700 text-white"
+                className="bg-stone-100 border-stone-200 text-stone-900"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-slate-300">Confirm New Password</Label>
+              <Label className="text-stone-700">Confirm New Password</Label>
               <Input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm password"
                 required
-                className="bg-slate-800 border-slate-700 text-white"
+                className="bg-stone-100 border-stone-200 text-stone-900"
               />
             </div>
-            <Button type="submit" disabled={changingPassword} className="bg-indigo-600 hover:bg-indigo-700">
+            <Button type="submit" disabled={changingPassword} className="bg-violet-700 hover:bg-violet-800">
               {changingPassword ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Update Password
             </Button>
@@ -149,14 +149,14 @@ export default function SettingsPage() {
       </Card>
 
       {/* Automation — Scheduled Auto-Scans */}
-      <Card className="bg-slate-900/50 border-slate-800 mb-6">
+      <Card className="bg-white border-stone-200 mb-6">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <CalendarClock className="h-4 w-4" /> Scheduled Auto-Scans
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-slate-400 mb-4">
+          <p className="text-sm text-stone-500 mb-4">
             Automatically re-scan your brands and get a digest email with your score change,
             new opportunities, and competitor movement.
             {plan === 'starter' && (
@@ -165,23 +165,23 @@ export default function SettingsPage() {
               </span>
             )}
             {plan === 'pro' && (
-              <span className="block mt-2 text-slate-500">Weekly scans on Pro. Upgrade to Max for daily.</span>
+              <span className="block mt-2 text-stone-500">Weekly scans on Pro. Upgrade to Max for daily.</span>
             )}
           </p>
           {brands.length === 0 ? (
-            <p className="text-sm text-slate-500">Add a brand first to enable auto-scans.</p>
+            <p className="text-sm text-stone-500">Add a brand first to enable auto-scans.</p>
           ) : (
             <div className="space-y-2">
               {brands.map(b => (
-                <div key={b.id} className="flex items-center justify-between gap-3 bg-slate-800/40 rounded-lg px-3 py-2">
-                  <span className="text-sm text-slate-200 truncate">{b.brand_name}</span>
+                <div key={b.id} className="flex items-center justify-between gap-3 bg-stone-100 rounded-lg px-3 py-2">
+                  <span className="text-sm text-stone-800 truncate">{b.brand_name}</span>
                   <div className="flex items-center gap-2 shrink-0">
-                    {savingBrandId === b.id && <Loader2 className="h-3.5 w-3.5 animate-spin text-slate-400" />}
+                    {savingBrandId === b.id && <Loader2 className="h-3.5 w-3.5 animate-spin text-stone-500" />}
                     <select
                       value={b.auto_scan || 'off'}
                       disabled={plan === 'starter' || savingBrandId === b.id}
                       onChange={(e) => handleAutoScanChange(b.id, e.target.value as 'off' | 'weekly' | 'daily')}
-                      className="bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-md px-2 py-1.5 disabled:opacity-50 focus:outline-none focus:border-indigo-500"
+                      className="bg-white border border-stone-200 text-stone-800 text-sm rounded-md px-2 py-1.5 disabled:opacity-50 focus:outline-none focus:border-violet-600"
                     >
                       <option value="off">Off</option>
                       <option value="weekly" disabled={plan === 'starter'}>Weekly</option>
@@ -196,37 +196,37 @@ export default function SettingsPage() {
       </Card>
 
       {/* Danger Zone */}
-      <Card className="bg-slate-900/50 border-red-500/20">
+      <Card className="bg-white border-red-500/20">
         <CardHeader>
           <CardTitle className="text-lg text-red-400 flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" /> Danger Zone
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-slate-400 mb-4">
+          <p className="text-sm text-stone-500 mb-4">
             Permanently delete your account and all associated data. This action cannot be undone.
           </p>
           <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
             <DialogTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 px-4 py-2 border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors">
               Delete Account
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-800 text-white">
+            <DialogContent className="bg-white border-stone-200 text-stone-900">
               <DialogHeader>
                 <DialogTitle className="text-red-400">Delete Account</DialogTitle>
               </DialogHeader>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-stone-500">
                 This will permanently delete your account, all brands, scans, and data.
-                Type <span className="text-white font-mono">DELETE</span> to confirm.
+                Type <span className="text-stone-900 font-mono">DELETE</span> to confirm.
               </p>
               <Input
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
                 placeholder="Type DELETE"
-                className="bg-slate-800 border-slate-700 text-white"
+                className="bg-stone-100 border-stone-200 text-stone-900"
               />
               <DialogFooter>
                 <Button variant="ghost" onClick={() => setDeleteDialogOpen(false)}
-                  className="text-slate-400 hover:text-white">
+                  className="text-stone-500 hover:text-stone-900">
                   Cancel
                 </Button>
                 <Button

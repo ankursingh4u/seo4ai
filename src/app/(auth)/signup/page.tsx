@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { GoogleButton } from '@/components/auth/google-button'
 import { Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 
 export default function SignupPage() {
@@ -70,27 +71,27 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <Card className="border-slate-800 bg-slate-900/50 backdrop-blur">
+      <Card className="border-stone-200 bg-white backdrop-blur">
         <CardContent className="pt-8 pb-8">
           <div className="text-center space-y-4">
             <CheckCircle2 className="h-14 w-14 text-emerald-400 mx-auto" />
-            <h2 className="text-xl font-semibold text-white">Almost there — check your email</h2>
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3">
-              <p className="text-white font-medium text-sm">{email}</p>
+            <h2 className="text-xl font-semibold text-stone-900">Almost there — check your email</h2>
+            <div className="bg-stone-100 border border-stone-200 rounded-lg px-4 py-3">
+              <p className="text-stone-900 font-medium text-sm">{email}</p>
             </div>
-            <p className="text-slate-400 text-sm">
+            <p className="text-stone-500 text-sm">
               We sent a confirmation link to that address. Click it to activate your account and start scanning.
             </p>
             <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3 text-left">
               <p className="text-amber-400 text-xs font-medium mb-1">Don&apos;t see the email?</p>
-              <ul className="text-slate-400 text-xs space-y-1">
+              <ul className="text-stone-500 text-xs space-y-1">
                 <li>• Check your spam or junk folder</li>
                 <li>• It can take up to 2 minutes to arrive</li>
                 <li>• Make sure you typed your email correctly</li>
               </ul>
             </div>
             <Link href="/login">
-              <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800">
+              <Button variant="outline" className="border-stone-200 text-stone-700 hover:bg-stone-100">
                 Go to Login
               </Button>
             </Link>
@@ -101,21 +102,26 @@ export default function SignupPage() {
   }
 
   return (
-    <Card className="border-slate-800 bg-slate-900/50 backdrop-blur">
+    <Card className="border-stone-200 bg-white backdrop-blur">
       <CardHeader>
-        <CardTitle className="text-xl text-white text-center">Create your account</CardTitle>
+        <CardTitle className="text-xl text-stone-900 text-center">Create your account</CardTitle>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
+          <GoogleButton label="Sign up with Google" />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-stone-200" /></div>
+            <div className="relative flex justify-center text-xs"><span className="bg-white px-2 text-stone-400">or</span></div>
+          </div>
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-slate-300">Email</Label>
+            <Label htmlFor="email" className="text-stone-700">Email</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+              <Mail className="absolute left-3 top-3 h-4 w-4 text-stone-500" />
               <Input
                 id="email"
                 type="email"
@@ -123,14 +129,14 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="pl-9 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+                className="pl-9 bg-stone-100 border-stone-200 text-stone-900 placeholder:text-stone-500"
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-slate-300">Password</Label>
+            <Label htmlFor="password" className="text-stone-700">Password</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+              <Lock className="absolute left-3 top-3 h-4 w-4 text-stone-500" />
               <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
@@ -139,21 +145,21 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
-                className="pl-9 pr-9 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+                className="pl-9 pr-9 bg-stone-100 border-stone-200 text-stone-900 placeholder:text-stone-500"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-slate-500 hover:text-slate-300"
+                className="absolute right-3 top-3 text-stone-500 hover:text-stone-700"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-slate-300">Confirm Password</Label>
+            <Label htmlFor="confirmPassword" className="text-stone-700">Confirm Password</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+              <Lock className="absolute left-3 top-3 h-4 w-4 text-stone-500" />
               <Input
                 id="confirmPassword"
                 type={showPassword ? 'text' : 'password'}
@@ -161,7 +167,7 @@ export default function SignupPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="pl-9 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+                className="pl-9 bg-stone-100 border-stone-200 text-stone-900 placeholder:text-stone-500"
               />
             </div>
           </div>
@@ -170,14 +176,14 @@ export default function SignupPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="w-full bg-violet-700 hover:bg-violet-800 text-white"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             Create Account
           </Button>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-stone-500">
             Already have an account?{' '}
-            <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-medium">
+            <Link href="/login" className="text-violet-700 hover:text-violet-700 font-medium">
               Sign in
             </Link>
           </p>

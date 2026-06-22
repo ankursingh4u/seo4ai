@@ -41,17 +41,17 @@ export default function ForgotPasswordPage() {
 
   if (success) {
     return (
-      <Card className="border-slate-800 bg-slate-900/50 backdrop-blur">
+      <Card className="border-stone-200 bg-white backdrop-blur">
         <CardContent className="pt-6">
           <div className="text-center space-y-4">
             <CheckCircle2 className="h-12 w-12 text-emerald-400 mx-auto" />
-            <h2 className="text-xl font-semibold text-white">Check your email</h2>
-            <p className="text-slate-400 text-sm">
-              If an account exists for <span className="text-white font-medium">{email}</span>,
+            <h2 className="text-xl font-semibold text-stone-900">Check your email</h2>
+            <p className="text-stone-500 text-sm">
+              If an account exists for <span className="text-stone-900 font-medium">{email}</span>,
               you&apos;ll receive a password reset link.
             </p>
             <Link href="/login">
-              <Button variant="outline" className="mt-4 border-slate-700 text-slate-300 hover:bg-slate-800">
+              <Button variant="outline" className="mt-4 border-stone-200 text-stone-700 hover:bg-stone-100">
                 Back to Login
               </Button>
             </Link>
@@ -62,9 +62,9 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <Card className="border-slate-800 bg-slate-900/50 backdrop-blur">
+    <Card className="border-stone-200 bg-white backdrop-blur">
       <CardHeader>
-        <CardTitle className="text-xl text-white text-center">Reset your password</CardTitle>
+        <CardTitle className="text-xl text-stone-900 text-center">Reset your password</CardTitle>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -73,13 +73,13 @@ export default function ForgotPasswordPage() {
               {error}
             </div>
           )}
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-stone-500">
             Enter your email address and we&apos;ll send you a link to reset your password.
           </p>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-slate-300">Email</Label>
+            <Label htmlFor="email" className="text-stone-700">Email</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+              <Mail className="absolute left-3 top-3 h-4 w-4 text-stone-500" />
               <Input
                 id="email"
                 type="email"
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="pl-9 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+                className="pl-9 bg-stone-100 border-stone-200 text-stone-900 placeholder:text-stone-500"
               />
             </div>
           </div>
@@ -96,12 +96,12 @@ export default function ForgotPasswordPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="w-full bg-violet-700 hover:bg-violet-800 text-white"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             Send Reset Link
           </Button>
-          <Link href="/login" className="text-sm text-slate-400 hover:text-slate-300 flex items-center gap-1">
+          <Link href="/login" className="text-sm text-stone-500 hover:text-stone-700 flex items-center gap-1">
             <ArrowLeft className="h-3 w-3" /> Back to login
           </Link>
         </CardFooter>

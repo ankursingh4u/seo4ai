@@ -43,8 +43,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="flex flex-col h-full">
       <div className="p-6">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Eye className="h-6 w-6 text-indigo-400" />
-          <span className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+          <Eye className="h-6 w-6 text-violet-700" />
+          <span className="text-xl font-bold bg-gradient-to-r from-violet-700 to-violet-400 bg-clip-text text-transparent">
             SEO4AI
           </span>
         </Link>
@@ -60,8 +60,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-indigo-500/10 text-indigo-400'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-violet-500/10 text-violet-700'
+                  : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'
               }`}
             >
               <item.icon className="h-4 w-4" />
@@ -71,11 +71,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         })}
       </nav>
 
-      <div className="p-4 border-t border-slate-800">
-        <div className="text-xs text-slate-500 truncate mb-3 px-3">{userEmail}</div>
+      <div className="p-4 border-t border-stone-200">
+        <div className="text-xs text-stone-500 truncate mb-3 px-3">{userEmail}</div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-red-400 hover:bg-slate-800 w-full transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-stone-500 hover:text-red-400 hover:bg-stone-100 w-full transition-colors"
         >
           <LogOut className="h-4 w-4" />
           Sign Out
@@ -85,21 +85,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   )
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      <aside className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-56 lg:flex-col border-r border-slate-800 bg-slate-950">
+    <div className="min-h-screen bg-[#FBF8F4] text-stone-900">
+      <aside className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-56 lg:flex-col border-r border-stone-200 bg-[#FBF8F4]">
         <SidebarContent />
       </aside>
 
-      <div className="lg:hidden sticky top-0 z-40 flex items-center gap-4 bg-slate-950/80 backdrop-blur-lg border-b border-slate-800 px-4 py-3">
+      <div className="lg:hidden sticky top-0 z-40 flex items-center gap-4 bg-[#FBF8F4]/80 backdrop-blur-lg border-b border-stone-200 px-4 py-3">
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetTrigger className="inline-flex items-center justify-center rounded-md h-10 w-10 text-slate-400 hover:bg-slate-800 transition-colors">
+          <SheetTrigger className="inline-flex items-center justify-center rounded-md h-10 w-10 text-stone-500 hover:bg-stone-100 transition-colors">
             <Menu className="h-5 w-5" />
           </SheetTrigger>
-          <SheetContent side="left" className="w-56 p-0 bg-slate-950 border-slate-800">
+          <SheetContent side="left" className="w-56 p-0 bg-[#FBF8F4] border-stone-200">
             <SidebarContent />
           </SheetContent>
         </Sheet>
-        <span className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+        <span className="text-lg font-bold bg-gradient-to-r from-violet-700 to-violet-400 bg-clip-text text-transparent">
           SEO4AI
         </span>
       </div>

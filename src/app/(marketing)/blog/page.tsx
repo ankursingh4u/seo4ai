@@ -39,24 +39,24 @@ export default function BlogPage() {
     <section className="py-20 px-4">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl sm:text-5xl font-bold mb-4">Blog</h1>
-        <p className="text-slate-400 text-lg mb-12">
+        <p className="text-stone-500 text-lg mb-12">
           Insights on AI search visibility, brand intelligence, and the future of SEO.
         </p>
 
         <div className="space-y-10">
           {posts.map((post) => (
-            <article key={post.slug} className="border-b border-slate-800 pb-10 last:border-0">
+            <article key={post.slug} className="border-b border-stone-200 pb-10 last:border-0">
               <Link href={`/blog/${post.slug}`} className="group block">
-                <div className="flex items-center gap-3 text-sm text-slate-500 mb-3">
+                <div className="flex items-center gap-3 text-sm text-stone-500 mb-3">
                   <time>{post.date}</time>
-                  <span className="text-slate-700">|</span>
+                  <span className="text-stone-300">|</span>
                   <span>{post.readingTime}</span>
                 </div>
-                <h2 className="text-2xl font-semibold mb-3 group-hover:text-indigo-400 transition-colors">
+                <h2 className="text-2xl font-semibold mb-3 group-hover:text-violet-700 transition-colors">
                   {post.title}
                 </h2>
-                <p className="text-slate-400 leading-relaxed">{post.excerpt}</p>
-                <span className="inline-block mt-4 text-indigo-400 text-sm font-medium group-hover:underline">
+                <p className="text-stone-500 leading-relaxed">{post.excerpt}</p>
+                <span className="inline-block mt-4 text-violet-700 text-sm font-medium group-hover:underline">
                   Read more &rarr;
                 </span>
               </Link>

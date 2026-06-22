@@ -52,7 +52,7 @@ function ScoreCircle({ score }: { score: number }) {
   return (
     <div className={`inline-flex flex-col items-center justify-center w-40 h-40 rounded-full border-4 ${borderColor} ${bgColor}`}>
       <span className={`text-5xl font-bold ${color}`}>{score}</span>
-      <span className="text-xs text-slate-400 mt-1 text-center px-3">{label}</span>
+      <span className="text-xs text-stone-500 mt-1 text-center px-3">{label}</span>
     </div>
   )
 }
@@ -61,10 +61,10 @@ function ScoreBar({ value, max, color }: { value: number; max: number; color: st
   const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 bg-slate-800 rounded-full h-2">
+      <div className="flex-1 bg-stone-200 rounded-full h-2">
         <div className={`${color} h-2 rounded-full transition-all`} style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-sm text-slate-300 w-6 text-right font-mono">{value}</span>
+      <span className="text-sm text-stone-700 w-6 text-right font-mono">{value}</span>
     </div>
   )
 }
@@ -141,21 +141,21 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
   const maxMentions = Math.max(scan.mention_count, ...(competitors || []).map(c => c.mention_count), 1)
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-[#FBF8F4] text-stone-900">
       <div className="max-w-2xl mx-auto px-4 py-12">
         {/* Logo */}
         <div className="text-center mb-10">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-violet-700 to-violet-400 bg-clip-text text-transparent">
             SEO4AI
           </Link>
-          <p className="text-xs text-slate-500 mt-1">AI Visibility Report</p>
+          <p className="text-xs text-stone-500 mt-1">AI Visibility Report</p>
         </div>
 
         {/* Brand Info */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-1">{brand.brand_name}</h1>
-          <p className="text-slate-400 text-sm">{brand.industry}</p>
-          <p className="text-slate-600 text-xs mt-2">Scanned on {scanDate} &middot; {total} AI questions tested</p>
+          <p className="text-stone-500 text-sm">{brand.industry}</p>
+          <p className="text-stone-400 text-xs mt-2">Scanned on {scanDate} &middot; {total} AI questions tested</p>
         </div>
 
         {/* Score */}
@@ -169,14 +169,14 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
           scan.visibility_score >= 30 ? 'bg-amber-500/5 border-amber-500/20' :
           'bg-red-500/5 border-red-500/20'
         }`}>
-          <p className="text-base font-semibold text-white mb-2">
+          <p className="text-base font-semibold text-stone-900 mb-2">
             {scan.visibility_score >= 60
               ? `AI actively recommends ${brand.brand_name}`
               : scan.visibility_score >= 30
               ? `AI sometimes mentions ${brand.brand_name}`
               : `AI rarely mentions ${brand.brand_name}`}
           </p>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-stone-500">
             {scan.mention_count === 0
               ? `Out of ${total} customer-style questions tested, ${brand.brand_name} was not mentioned once. Customers searching AI are being sent to competitors.`
               : scan.mention_count === total
@@ -187,10 +187,10 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
 
         {/* Key numbers */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
-            <p className="text-2xl font-bold text-white">{mentionRate}%</p>
-            <p className="text-xs text-slate-500 mt-1">Mention Rate</p>
-            <p className="text-[10px] text-slate-600 mt-0.5">How often AI includes you</p>
+          <div className="bg-white border border-stone-200 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-stone-900">{mentionRate}%</p>
+            <p className="text-xs text-stone-500 mt-1">Mention Rate</p>
+            <p className="text-[10px] text-stone-400 mt-0.5">How often AI includes you</p>
           </div>
           {compStatus && topComp ? (
             <div className={`border rounded-xl p-4 text-center ${
@@ -204,51 +204,51 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
               }`}>
                 {compStatus === 'winning' ? 'Winning' : compStatus === 'tied' ? 'Tied' : 'Behind'}
               </p>
-              <p className="text-xs text-slate-500 mt-1">vs Competitors</p>
-              <p className="text-[10px] text-slate-600 mt-0.5">vs {topComp.competitor_name}</p>
+              <p className="text-xs text-stone-500 mt-1">vs Competitors</p>
+              <p className="text-[10px] text-stone-400 mt-0.5">vs {topComp.competitor_name}</p>
             </div>
           ) : (
-            <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
+            <div className="bg-white border border-stone-200 rounded-xl p-4 text-center">
               <p className="text-2xl font-bold text-amber-400">{opportunityCount || 0}</p>
-              <p className="text-xs text-slate-500 mt-1">Opportunities</p>
-              <p className="text-[10px] text-slate-600 mt-0.5">Searches you&apos;re missing</p>
+              <p className="text-xs text-stone-500 mt-1">Opportunities</p>
+              <p className="text-[10px] text-stone-400 mt-0.5">Searches you&apos;re missing</p>
             </div>
           )}
-          <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
+          <div className="bg-white border border-stone-200 rounded-xl p-4 text-center">
             <p className="text-2xl font-bold text-amber-400">{opportunityCount || 0}</p>
-            <p className="text-xs text-slate-500 mt-1">Missed Searches</p>
-            <p className="text-[10px] text-slate-600 mt-0.5">Where rivals win</p>
+            <p className="text-xs text-stone-500 mt-1">Missed Searches</p>
+            <p className="text-[10px] text-stone-400 mt-0.5">Where rivals win</p>
           </div>
         </div>
 
         {/* Competitor Comparison */}
         {competitors && competitors.length > 0 && (
-          <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-8">
-            <h2 className="text-sm font-semibold text-white mb-1">Head-to-Head: AI Mentions</h2>
-            <p className="text-xs text-slate-500 mb-5">How many AI responses mentioned each brand out of {total} questions tested</p>
+          <div className="bg-white border border-stone-200 rounded-xl p-6 mb-8">
+            <h2 className="text-sm font-semibold text-stone-900 mb-1">Head-to-Head: AI Mentions</h2>
+            <p className="text-xs text-stone-500 mb-5">How many AI responses mentioned each brand out of {total} questions tested</p>
             <div className="space-y-4">
               {/* Brand row */}
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                    <span className="text-sm font-semibold text-white">{brand.brand_name} (You)</span>
+                    <div className="w-2 h-2 rounded-full bg-violet-600" />
+                    <span className="text-sm font-semibold text-stone-900">{brand.brand_name} (You)</span>
                   </div>
-                  <span className="text-xs text-slate-400">{scan.mention_count}/{total} responses</span>
+                  <span className="text-xs text-stone-500">{scan.mention_count}/{total} responses</span>
                 </div>
-                <ScoreBar value={scan.mention_count} max={maxMentions} color="bg-indigo-500" />
+                <ScoreBar value={scan.mention_count} max={maxMentions} color="bg-violet-600" />
               </div>
               {competitors.map((comp) => (
                 <div key={comp.competitor_name}>
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-slate-500" />
-                      <span className="text-sm text-slate-300">{comp.competitor_name}</span>
+                      <div className="w-2 h-2 rounded-full bg-stone-400" />
+                      <span className="text-sm text-stone-700">{comp.competitor_name}</span>
                     </div>
-                    <span className="text-xs text-slate-400">{comp.mention_count}/{total} responses</span>
+                    <span className="text-xs text-stone-500">{comp.mention_count}/{total} responses</span>
                   </div>
                   <ScoreBar value={comp.mention_count} max={maxMentions} color={
-                    comp.mention_count > scan.mention_count ? 'bg-red-500/70' : 'bg-slate-600'
+                    comp.mention_count > scan.mention_count ? 'bg-red-500/70' : 'bg-stone-300'
                   } />
                 </div>
               ))}
@@ -270,7 +270,7 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
         {(opportunityCount || 0) > 0 && (
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-5 mb-8">
             <p className="text-amber-400 font-semibold text-base mb-1">{opportunityCount} Missed Search Opportunities</p>
-            <p className="text-slate-400 text-sm">
+            <p className="text-stone-500 text-sm">
               There are {opportunityCount} customer questions where competitors appear in AI answers but {brand.brand_name} doesn&apos;t.
               These are customers you could be winning.
             </p>
@@ -279,20 +279,20 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
 
         {/* CTA */}
         <div className="text-center mb-12">
-          <p className="text-slate-400 text-sm mb-4">Want to know how to fix this and improve your score?</p>
+          <p className="text-stone-500 text-sm mb-4">Want to know how to fix this and improve your score?</p>
           <Link
             href="/signup"
-            className="inline-flex items-center justify-center px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors text-base"
+            className="inline-flex items-center justify-center px-8 py-3 bg-violet-700 hover:bg-violet-800 text-white font-medium rounded-lg transition-colors text-base"
           >
             Check your brand for free →
           </Link>
-          <p className="text-slate-600 text-xs mt-3">Free account — no credit card required</p>
+          <p className="text-stone-400 text-xs mt-3">Free account — no credit card required</p>
         </div>
 
-        <div className="text-center border-t border-slate-800 pt-6">
-          <p className="text-slate-600 text-xs">
+        <div className="text-center border-t border-stone-200 pt-6">
+          <p className="text-stone-400 text-xs">
             Powered by{' '}
-            <Link href="/" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+            <Link href="/" className="text-violet-700 hover:text-violet-700 transition-colors">
               SEO4AI
             </Link>
             {' '}&mdash; AI Visibility Intelligence
