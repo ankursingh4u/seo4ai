@@ -372,14 +372,16 @@ interface GeneratedArticle {
   contentHtml: string
 }
 
-function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesRemaining, canPublish, publishResetsAt }: {
+function PublishSection({ brandId, plan, publishLimit, publishesUsed, canPublish, publishResetsAt, generationLimit, generationsUsed, canGenerate }: {
   brandId: string
   plan: string
   publishLimit: number
   publishesUsed: number
-  publishesRemaining: number
   canPublish: boolean
   publishResetsAt: string | null
+  generationLimit: number
+  generationsUsed: number
+  canGenerate: boolean
 }) {
   const [topic, setTopic] = useState('')
   const [generating, setGenerating] = useState(false)
@@ -394,7 +396,8 @@ function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesR
   const [savedConn, setSavedConn] = useState(false)
 
   const canUse = publishLimit > 0          // Pro or Max may publish at all
-  const quotaLeft = canPublish             // has a publish remaining this period
+  const quotaLeft = canPublish             // has a LIVE publish remaining this period
+  const canGen = canGenerate               // has an article generation remaining (OpenAI cost cap)
   const resetLabel = publishResetsAt ? new Date(publishResetsAt).toLocaleDateString() : ''
   const storageKey = brandId ? `seo4ai-wp-${brandId}` : ''
 
@@ -424,6 +427,10 @@ function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesR
     if (!canUse) {
       toast.error('Upgrade to Pro or Max to generate & publish articles')
       window.location.href = '/dashboard/billing'
+      return
+    }
+    if (!canGen) {
+      toast.error(`You've used all ${generationLimit} article generations this period${resetLabel ? ` — resets ${resetLabel}` : ''}`)
       return
     }
     if (!brandId) {
@@ -501,7 +508,7 @@ function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesR
           <span className="text-stone-400 font-normal normal-case text-[10px]">— generate an AI-optimized article and post it to your site</span>
           {!canUse
             ? <Badge className="bg-violet-500/20 text-violet-700 text-[9px] ml-1">Pro &amp; Max</Badge>
-            : <Badge className="bg-stone-200 text-stone-600 text-[9px] ml-1 normal-case font-normal">{publishesUsed}/{publishLimit} used{resetLabel ? ` · resets ${resetLabel}` : ''}</Badge>}
+            : <Badge className="bg-stone-200 text-stone-600 text-[9px] ml-1 normal-case font-normal">{generationsUsed}/{generationLimit} articles{resetLabel ? ` · resets ${resetLabel}` : ''}</Badge>}
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0 pb-4 space-y-3">
@@ -518,15 +525,15 @@ function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesR
             />
             <Button
               onClick={generate}
-              disabled={generating}
-              className={`h-9 text-sm px-6 ${canUse ? 'bg-violet-700 hover:bg-violet-800' : 'bg-stone-200 hover:bg-stone-300 text-stone-700'}`}
+              disabled={generating || (canUse && !canGen)}
+              className={`h-9 text-sm px-6 ${canUse && canGen ? 'bg-violet-700 hover:bg-violet-800' : 'bg-stone-200 hover:bg-stone-300 text-stone-700'}`}
             >
               {generating ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" /> : <FileText className="h-3.5 w-3.5 mr-2" />}
-              {generating ? 'Writing...' : !canUse ? 'Upgrade to Generate' : 'Generate Article'}
+              {generating ? 'Writing...' : !canUse ? 'Upgrade to Generate' : !canGen ? 'Article limit reached' : 'Generate Article'}
             </Button>
-            {canUse && !quotaLeft && (
+            {canUse && !canGen && (
               <p className="text-[11px] text-stone-500">
-                You&apos;ve used all {publishLimit} live publishes this period{resetLabel ? ` — resets ${resetLabel}` : ''}. You can still save drafts.
+                You&apos;ve used all {generationLimit} article generations this period{resetLabel ? ` — resets ${resetLabel}` : ''}.
               </p>
             )}
           </div>
@@ -581,11 +588,10 @@ function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesR
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="accent-violet-700 h-3 w-3" />
                   Remember on this device (stored only in your browser, never on our servers)
                 </label>
-                {!quotaLeft && (
-                  <p className="text-[10px] text-amber-600">
-                    Live-publish limit reached for this period{resetLabel ? ` (resets ${resetLabel})` : ''} — &ldquo;Save as draft&rdquo; still works.
-                  </p>
-                )}
+                <p className="text-[10px] text-stone-500">
+                  Live publishes: {publishesUsed}/{publishLimit} this period{resetLabel ? ` · resets ${resetLabel}` : ''}.
+                  {!quotaLeft && <span className="text-amber-600"> Limit reached — &ldquo;Save as draft&rdquo; still works.</span>}
+                </p>
                 <div className="flex items-center gap-2 pt-1">
                   <select
                     value={status}
@@ -619,7 +625,7 @@ export default function DashboardPage() {
   const [savingBrand, setSavingBrand] = useState(false)
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
   const [showFixPlan, setShowFixPlan] = useState(false)
-  const [userPlan, setUserPlan] = useState<{ plan: string; canScan: boolean; canViewCompetitors: boolean; canViewFixPlan: boolean; scansUsed: number; scanLimit: number; brandLimit: number; publishLimit: number; publishesUsed: number; publishesRemaining: number; canPublish: boolean; publishResetsAt: string | null } | null>(null)
+  const [userPlan, setUserPlan] = useState<{ plan: string; canScan: boolean; canViewCompetitors: boolean; canViewFixPlan: boolean; scansUsed: number; scanLimit: number; brandLimit: number; publishLimit: number; publishesUsed: number; publishesRemaining: number; canPublish: boolean; publishResetsAt: string | null; generationLimit: number; generationsUsed: number; generationsRemaining: number; canGenerate: boolean } | null>(null)
   const [discoveringComps, setDiscoveringComps] = useState(false)
   const [showScoreInfo, setShowScoreInfo] = useState(false)
   const [showWalkthrough, setShowWalkthrough] = useState(false)
@@ -1361,9 +1367,11 @@ export default function DashboardPage() {
             plan={userPlan?.plan || 'free'}
             publishLimit={userPlan?.publishLimit ?? 0}
             publishesUsed={userPlan?.publishesUsed ?? 0}
-            publishesRemaining={userPlan?.publishesRemaining ?? 0}
             canPublish={userPlan?.canPublish ?? false}
             publishResetsAt={userPlan?.publishResetsAt ?? null}
+            generationLimit={userPlan?.generationLimit ?? 0}
+            generationsUsed={userPlan?.generationsUsed ?? 0}
+            canGenerate={userPlan?.canGenerate ?? false}
           />
 
           {/* Fix Plan */}

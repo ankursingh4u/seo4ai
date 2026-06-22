@@ -53,6 +53,14 @@ export async function GET() {
     const publishesUsed = publishCount || 0
     const publishLimit = planConfig.publishLimit ?? 0
 
+    const { count: genCount } = await supabase
+      .from('article_generations')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', periodStart.toISOString())
+    const generationsUsed = genCount || 0
+    const generationLimit = planConfig.generationLimit ?? 0
+
     return NextResponse.json({
       plan,
       status: userPlan?.status || 'active',
@@ -69,6 +77,10 @@ export async function GET() {
       publishesRemaining: Math.max(0, publishLimit - publishesUsed),
       canPublish: publishLimit > 0 && publishesUsed < publishLimit,
       publishResetsAt: (userPlan as { current_period_end?: string | null } | null)?.current_period_end || null,
+      generationLimit,
+      generationsUsed,
+      generationsRemaining: Math.max(0, generationLimit - generationsUsed),
+      canGenerate: generationLimit > 0 && generationsUsed < generationLimit,
     })
   } catch {
     return NextResponse.json({
@@ -87,6 +99,10 @@ export async function GET() {
       publishesRemaining: 0,
       canPublish: false,
       publishResetsAt: null,
+      generationLimit: 0,
+      generationsUsed: 0,
+      generationsRemaining: 0,
+      canGenerate: false,
     })
   }
 }

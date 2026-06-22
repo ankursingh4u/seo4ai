@@ -3,6 +3,13 @@ import { getOpenAI } from '@/lib/openai'
 import { PLANS } from '@/lib/payment'
 import { NextRequest, NextResponse } from 'next/server'
 
+function periodStartFor(userPlan: { current_period_start?: string | null } | null): Date {
+  if (userPlan?.current_period_start) return new Date(userPlan.current_period_start)
+  const d = new Date()
+  d.setDate(d.getDate() - 30)
+  return d
+}
+
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
@@ -28,6 +35,26 @@ export async function POST(request: NextRequest) {
     const publishLimit = PLANS[plan]?.publishLimit ?? 0
     if (publishLimit <= 0) {
       return NextResponse.json({ error: 'Upgrade to Pro or Max to generate & publish articles.' }, { status: 403 })
+    }
+
+    // Generating an article calls OpenAI (a real per-call cost) — cap the number
+    // of generations per period (Pro 5 / Max 20). Saving drafts is free.
+    const generationLimit = PLANS[plan]?.generationLimit ?? 0
+    const periodStart = periodStartFor(userPlan)
+    const { count: genUsed } = await supabase
+      .from('article_generations')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', periodStart.toISOString())
+
+    if ((genUsed || 0) >= generationLimit) {
+      const resetMsg = userPlan?.current_period_end
+        ? ` It resets on ${new Date(userPlan.current_period_end).toLocaleDateString()}.`
+        : ''
+      return NextResponse.json(
+        { error: `You've used all ${generationLimit} article generations for this period.${resetMsg}` },
+        { status: 403 }
+      )
     }
 
     const { brandId, topic } = await request.json()
@@ -78,6 +105,9 @@ Make it genuinely useful and factual — do not stuff keywords or invent claims 
 
     const raw = completion.choices[0]?.message?.content || '{}'
     const article = JSON.parse(raw)
+
+    // Count this successful generation against the period cap.
+    await supabase.from('article_generations').insert({ user_id: user.id, brand_id: brandId || null })
 
     return NextResponse.json({ article })
   } catch (error) {
