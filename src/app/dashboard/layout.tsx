@@ -6,13 +6,14 @@ import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import {
-  LayoutDashboard, Settings, LogOut, Menu, Eye, CreditCard
+  LayoutDashboard, Settings, LogOut, Menu, Eye, CreditCard, Home
 } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+  { href: '/', label: 'Home page', icon: Home },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

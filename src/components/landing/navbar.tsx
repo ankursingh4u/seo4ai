@@ -1,12 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { createBrowserClient } from '@supabase/ssr'
 import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
 
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setLoggedIn(!!user))
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => setLoggedIn(!!session?.user))
+    return () => sub.subscription.unsubscribe()
+  }, [])
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FBF8F4]/85 backdrop-blur-lg border-b border-stone-200/70">
@@ -28,25 +41,43 @@ export function Navbar() {
 
           {/* Desktop auth buttons */}
           <div className="hidden md:flex items-center gap-2">
-            <Link href="/login">
-              <Button variant="ghost" className="text-stone-700 hover:text-stone-900 hover:bg-stone-200/60">
-                Log in
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button className="bg-violet-700 hover:bg-violet-800 text-white shadow-sm">
-                Run my free scan
-              </Button>
-            </Link>
+            {loggedIn ? (
+              <Link href="/dashboard">
+                <Button className="bg-violet-700 hover:bg-violet-800 text-white shadow-sm">
+                  Go to dashboard
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" className="text-stone-700 hover:text-stone-900 hover:bg-stone-200/60">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button className="bg-violet-700 hover:bg-violet-800 text-white shadow-sm">
+                    Run my free scan
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
-          {/* Mobile: always show Sign Up + hamburger */}
+          {/* Mobile: primary button + hamburger */}
           <div className="flex md:hidden items-center gap-2">
-            <Link href="/signup">
-              <Button size="sm" className="bg-violet-700 hover:bg-violet-800 text-white text-xs px-3 h-8">
-                Free scan
-              </Button>
-            </Link>
+            {loggedIn ? (
+              <Link href="/dashboard">
+                <Button size="sm" className="bg-violet-700 hover:bg-violet-800 text-white text-xs px-3 h-8">
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/signup">
+                <Button size="sm" className="bg-violet-700 hover:bg-violet-800 text-white text-xs px-3 h-8">
+                  Free scan
+                </Button>
+              </Link>
+            )}
             <button
               className="text-stone-600 hover:text-stone-900 p-1"
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -65,9 +96,15 @@ export function Navbar() {
             <a href="#features" className="block text-stone-600 hover:text-stone-900 px-2 py-2.5 rounded-lg hover:bg-stone-200/50 transition-colors" onClick={() => setMobileOpen(false)}>Features</a>
             <a href="#pricing" className="block text-stone-600 hover:text-stone-900 px-2 py-2.5 rounded-lg hover:bg-stone-200/50 transition-colors" onClick={() => setMobileOpen(false)}>Pricing</a>
             <div className="pt-2 border-t border-stone-200 mt-2">
-              <Link href="/login" className="block text-stone-700 px-2 py-2.5 hover:text-stone-900 transition-colors" onClick={() => setMobileOpen(false)}>
-                Log in
-              </Link>
+              {loggedIn ? (
+                <Link href="/dashboard" className="block text-violet-700 font-medium px-2 py-2.5 hover:text-violet-800 transition-colors" onClick={() => setMobileOpen(false)}>
+                  Go to dashboard
+                </Link>
+              ) : (
+                <Link href="/login" className="block text-stone-700 px-2 py-2.5 hover:text-stone-900 transition-colors" onClick={() => setMobileOpen(false)}>
+                  Log in
+                </Link>
+              )}
             </div>
           </div>
         )}
