@@ -20,9 +20,9 @@ function XIcon({ className }: { className?: string }) {
 // roadmap shown as "soon" so the vision is visible without overclaiming.
 const ENGINES = [
   { name: 'ChatGPT', live: true },
-  { name: 'Gemini', live: false },
-  { name: 'Perplexity', live: false },
+  { name: 'Gemini', live: true },
   { name: 'Claude', live: false },
+  { name: 'Perplexity', live: false },
   { name: 'AI Overviews', live: false },
   { name: 'Grok', live: false },
   { name: 'Copilot', live: false },
@@ -497,14 +497,14 @@ export default function LandingPage() {
                 features: ['1 brand', '3 scans / month', 'AI Visibility Score', 'Competitor gap (basic)'],
               },
               {
-                name: 'Pro', price: '$9', suffix: '/mo', engines: '3 engines (rolling out)',
+                name: 'Pro', price: '$24.99', suffix: '/mo', engines: 'ChatGPT + Gemini',
                 highlight: true, badge: 'Most popular',
-                features: ['3 brands', '15 scans / month', 'Perplexity + Gemini (soon)', 'Off-site opportunity finder', 'Progress history'],
+                features: ['3 brands', '15 scans / month', 'ChatGPT + Gemini engines', 'Competitor gap analysis', 'Off-site opportunity finder', 'Progress history'],
               },
               {
-                name: 'Max', price: '$29', suffix: '/mo', engines: 'All engines (rolling out)',
+                name: 'Max', price: '$49.99', suffix: '/mo', engines: 'ChatGPT + Gemini + Claude',
                 highlight: false, badge: 'Full power',
-                features: ['10 brands', '60 scans / month', '+ Claude, Grok, Copilot (soon)', 'Write & 1-click publish to WordPress', 'Fix plan + outreach drafts', 'Priority support'],
+                features: ['10 brands', '60 scans / month', 'All engines (+ more soon)', 'Write & 1-click publish to WordPress', 'Fix plan + outreach drafts', 'Priority support'],
               },
             ].map((p) => (
               <div

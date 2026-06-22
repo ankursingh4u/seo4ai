@@ -1,13 +1,12 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { getOpenAI } from '@/lib/openai'
 import { generatePrompts, type MarketRegion } from '@/lib/prompts'
 import {
-  analyzeMentions,
   calculateVisibilityScore,
   analyzeCompetitorGaps,
   findPromptOpportunities,
   isBrandEchoPrompt,
 } from '@/lib/analyzer'
+import { getScanEngines, queryEnginesAndAnalyze } from '@/lib/engines'
 
 export interface ScanRunResult {
   scanId: string
@@ -17,16 +16,6 @@ export interface ScanRunResult {
   competitorMentionCount: number
   promptsProcessed: number
   opportunitiesFound: number
-}
-
-async function queryAI(prompt: string): Promise<string> {
-  const completion = await getOpenAI().chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: prompt }],
-    max_tokens: 1000,
-    temperature: 0.7,
-  })
-  return completion.choices[0]?.message?.content || ''
 }
 
 async function processBatch<T>(items: T[], batchSize: number, processor: (item: T) => Promise<unknown>) {
@@ -59,9 +48,22 @@ export async function runScan(supabase: SupabaseClient, scanId: string): Promise
     competitors: string[]
     website: string | null
     market_region?: { type: string; country?: string; state?: string; city?: string }
+    user_id?: string
   }
 
   await supabase.from('scans').update({ status: 'running' }).eq('id', scanId)
+
+  // Engines depend on the brand owner's plan: free→ChatGPT, pro→+Gemini, max→+Claude.
+  let plan = 'starter'
+  if (brand.user_id) {
+    const { data: up } = await supabase
+      .from('user_plans')
+      .select('plan')
+      .eq('user_id', brand.user_id)
+      .single()
+    plan = up?.plan || 'starter'
+  }
+  const engines = getScanEngines(plan)
 
   const prompts = generatePrompts(
     brand.industry,
@@ -82,27 +84,27 @@ export async function runScan(supabase: SupabaseClient, scanId: string): Promise
     position: number | null
   }> = []
 
-  await processBatch(prompts, 5, async (prompt) => {
+  // Smaller batch since each prompt now fans out across multiple engines.
+  await processBatch(prompts, 4, async (prompt) => {
     try {
-      const aiResponse = await queryAI(prompt)
-      const analysis = analyzeMentions(aiResponse, brand.brand_name, brand.competitors)
+      const r = await queryEnginesAndAnalyze(prompt, engines, brand.brand_name, brand.competitors)
       promptResultsData.push({
         scan_id: scanId,
         prompt,
-        ai_model: 'gpt-4o-mini',
-        ai_response: aiResponse,
-        brand_mentioned: analysis.brandMentioned,
-        brand_sentiment: analysis.brandSentiment,
-        competitors_mentioned: analysis.competitorsMentioned,
-        sentiment_score: analysis.sentimentScore,
-        position: analysis.brandPosition,
+        ai_model: r.aiModel,
+        ai_response: r.aiResponse,
+        brand_mentioned: r.analysis.brandMentioned,
+        brand_sentiment: r.analysis.brandSentiment,
+        competitors_mentioned: r.analysis.competitorsMentioned,
+        sentiment_score: r.analysis.sentimentScore,
+        position: r.analysis.brandPosition,
       })
     } catch (err) {
       console.error(`Failed to process prompt: ${prompt}`, err)
       promptResultsData.push({
         scan_id: scanId,
         prompt,
-        ai_model: 'gpt-4o-mini',
+        ai_model: 'none',
         ai_response: 'Error: Failed to get AI response',
         brand_mentioned: false,
         brand_sentiment: 'neutral',

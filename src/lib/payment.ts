@@ -62,18 +62,18 @@ export const PLANS = {
   },
   pro: {
     name: 'Pro',
-    price: 9,
+    price: 24.99,
     scanLimit: 15,
     brandLimit: 3,
-    features: ['15 scans/month', '3 brands', 'Competitor gap scores', 'Progress history', 'Region targeting'],
-    lockedFeatures: ['AI Fix Plan', 'Boost content'],
+    features: ['15 scans/month', '3 brands', 'ChatGPT + Gemini', 'Competitor gap scores', 'Progress history', 'Region targeting'],
+    lockedFeatures: ['AI Fix Plan', 'Boost content', 'Publishing'],
   },
   max: {
     name: 'Max',
-    price: 29,
+    price: 49.99,
     scanLimit: 60,
     brandLimit: 10,
-    features: ['60 scans/month', '10 brands', 'Competitor scores', 'AI Fix Plan', 'Boost content generator', 'Export reports', 'Priority support'],
+    features: ['60 scans/month', '10 brands', 'ChatGPT + Gemini + Claude', 'AI Fix Plan', 'Boost + outreach', '1-click WordPress publish', 'Priority support'],
     lockedFeatures: [],
   },
 } as const
