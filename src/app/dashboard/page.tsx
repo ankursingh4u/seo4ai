@@ -372,9 +372,8 @@ interface GeneratedArticle {
   contentHtml: string
 }
 
-function PublishSection({ brandId, plan, publishLimit, publishesUsed, canPublish, publishResetsAt, generationLimit, generationsUsed, canGenerate }: {
+function PublishSection({ brandId, publishLimit, publishesUsed, canPublish, publishResetsAt, generationLimit, generationsUsed, canGenerate }: {
   brandId: string
-  plan: string
   publishLimit: number
   publishesUsed: number
   canPublish: boolean
@@ -1364,7 +1363,6 @@ export default function DashboardPage() {
           {/* Write & Publish — generate article + 1-click WordPress publish */}
           <PublishSection
             brandId={brand?.id || ''}
-            plan={userPlan?.plan || 'free'}
             publishLimit={userPlan?.publishLimit ?? 0}
             publishesUsed={userPlan?.publishesUsed ?? 0}
             canPublish={userPlan?.canPublish ?? false}
