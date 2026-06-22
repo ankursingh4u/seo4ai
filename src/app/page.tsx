@@ -561,18 +561,52 @@ export default function LandingPage() {
       </section>
 
       {/* ───────────────────── Footer ───────────────────── */}
-      <footer className="border-t border-stone-200 px-4 py-12">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-violet-700 text-white text-xs font-bold">A</span>
-            <span className="font-bold text-stone-900">SEO4AI</span>
+      <footer className="border-t border-stone-200 bg-white px-4 py-14">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-violet-700 text-white text-sm font-bold">A</span>
+                <span className="font-bold text-stone-900 text-lg">SEO4AI</span>
+              </div>
+              <p className="text-sm text-stone-500 max-w-xs leading-relaxed">
+                The visibility layer for AI search. See whether ChatGPT, Gemini and Perplexity
+                recommend your brand — and fix it.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">Product</p>
+              <ul className="space-y-2 text-sm text-stone-600">
+                <li><a href="#why" className="hover:text-stone-900 transition-colors">How it works</a></li>
+                <li><a href="#engines" className="hover:text-stone-900 transition-colors">Engines</a></li>
+                <li><a href="#features" className="hover:text-stone-900 transition-colors">Features</a></li>
+                <li><a href="#pricing" className="hover:text-stone-900 transition-colors">Pricing</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">Legal</p>
+              <ul className="space-y-2 text-sm text-stone-600">
+                <li><Link href="/terms" className="hover:text-stone-900 transition-colors">Terms &amp; Conditions</Link></li>
+                <li><Link href="/privacy" className="hover:text-stone-900 transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/refund" className="hover:text-stone-900 transition-colors">Refund Policy</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">Contact</p>
+              <ul className="space-y-2 text-sm text-stone-600">
+                <li><a href="mailto:support@seo4ai.app" className="hover:text-stone-900 transition-colors">support@seo4ai.app</a></li>
+                <li className="text-stone-500">Built &amp; operated by SEO4AI</li>
+              </ul>
+            </div>
           </div>
-          <div className="flex gap-8 text-sm text-stone-500">
-            <a href="#how-it-works" className="hover:text-stone-900 transition-colors">How it works</a>
-            <a href="#engines" className="hover:text-stone-900 transition-colors">Engines</a>
-            <a href="#pricing" className="hover:text-stone-900 transition-colors">Pricing</a>
+
+          <div className="mt-10 pt-6 border-t border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-stone-400">
+            <p>&copy; 2026 SEO4AI. All rights reserved.</p>
+            <p>All sales final · <Link href="/refund" className="underline hover:text-stone-600">no refunds</Link>.</p>
           </div>
-          <p className="text-sm text-stone-400">&copy; 2026 SEO4AI. All rights reserved.</p>
         </div>
       </footer>
     </div>

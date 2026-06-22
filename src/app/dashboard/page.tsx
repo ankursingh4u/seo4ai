@@ -843,7 +843,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="rounded-2xl border border-stone-200 bg-gradient-to-br from-white to-violet-50/60 shadow-[0_1px_3px_rgba(28,25,23,0.06)] p-4 sm:p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-violet-700 mb-2.5">AI Visibility Dashboard</p>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2 flex-wrap">
           {data?.brands && data.brands.length > 1 ? (
             <select
@@ -914,6 +916,7 @@ export default function DashboardPage() {
             {scanning ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Scan className="h-3 w-3 mr-1" />}
             {scanning ? 'Scanning...' : `Run Scan${userPlan ? ` (${userPlan.scansUsed}/${userPlan.scanLimit})` : ''}`}
           </Button>
+        </div>
         </div>
       </div>
 
