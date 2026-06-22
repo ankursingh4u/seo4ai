@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import { Button } from '@/components/ui/button'
@@ -8,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { GoogleButton } from '@/components/auth/google-button'
-import { Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
+import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -17,7 +18,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
+  const router = useRouter()
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -39,66 +40,33 @@ export default function SignupPage() {
 
     setLoading(true)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        // window.location.origin is localhost:3000 in dev, your real domain in production — always correct
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/auth/callback`,
-      },
-    })
-
-    if (error) {
-      // Give friendly, user-readable error messages
-      if (error.message.toLowerCase().includes('already registered') || error.message.toLowerCase().includes('already exists') || error.message.toLowerCase().includes('email address is already')) {
-        setError('An account with this email already exists. Try signing in instead.')
-      } else if (error.message.toLowerCase().includes('invalid email')) {
-        setError('Please enter a valid email address.')
-      } else if (error.message.toLowerCase().includes('rate limit') || error.message.toLowerCase().includes('too many')) {
-        setError('Too many attempts. Please wait a minute and try again.')
-      } else if (error.message.toLowerCase().includes('weak password') || error.message.toLowerCase().includes('password should')) {
-        setError('Password is too weak. Use at least 8 characters with letters and numbers.')
-      } else {
-        setError(error.message)
+    try {
+      // Auto-confirms the user server-side (service role) → no confirmation
+      // email is sent → Supabase's email rate limit never applies.
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), password }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Sign-up failed. Please try again.')
+        setLoading(false)
+        return
       }
+
+      // Account is already verified — sign in immediately, straight to dashboard.
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      if (signInError) {
+        router.push('/login?message=created')
+        return
+      }
+      router.push('/dashboard')
+      router.refresh()
+    } catch {
+      setError('Sign-up failed. Please try again.')
       setLoading(false)
-      return
     }
-
-    setSuccess(true)
-    setLoading(false)
-  }
-
-  if (success) {
-    return (
-      <Card className="border-stone-200 bg-white backdrop-blur">
-        <CardContent className="pt-8 pb-8">
-          <div className="text-center space-y-4">
-            <CheckCircle2 className="h-14 w-14 text-emerald-400 mx-auto" />
-            <h2 className="text-xl font-semibold text-stone-900">Almost there — check your email</h2>
-            <div className="bg-stone-100 border border-stone-200 rounded-lg px-4 py-3">
-              <p className="text-stone-900 font-medium text-sm">{email}</p>
-            </div>
-            <p className="text-stone-500 text-sm">
-              We sent a confirmation link to that address. Click it to activate your account and start scanning.
-            </p>
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3 text-left">
-              <p className="text-amber-400 text-xs font-medium mb-1">Don&apos;t see the email?</p>
-              <ul className="text-stone-500 text-xs space-y-1">
-                <li>• Check your spam or junk folder</li>
-                <li>• It can take up to 2 minutes to arrive</li>
-                <li>• Make sure you typed your email correctly</li>
-              </ul>
-            </div>
-            <Link href="/login">
-              <Button variant="outline" className="border-stone-200 text-stone-700 hover:bg-stone-100">
-                Go to Login
-              </Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-    )
   }
 
   return (
