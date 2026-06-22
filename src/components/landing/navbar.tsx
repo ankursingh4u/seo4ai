@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
 import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
@@ -27,7 +28,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-violet-700 text-white text-sm font-bold">A</span>
+            <Image src="/logo-mark.png" alt="SEO4AI" width={32} height={32} className="h-8 w-8" priority />
             <span className="text-xl font-bold tracking-tight text-stone-900">SEO4AI</span>
           </Link>
 
