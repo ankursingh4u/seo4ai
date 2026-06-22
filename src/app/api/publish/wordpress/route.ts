@@ -40,28 +40,34 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Upgrade to Pro or Max to publish to WordPress.' }, { status: 403 })
     }
 
-    // Enforce the per-period publish quota (Pro 1 / Max 3) before we post.
-    const periodStart = periodStartFor(userPlan)
-    const { count: usedCount } = await supabase
-      .from('wordpress_publishes')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .gte('published_at', periodStart.toISOString())
-
-    if ((usedCount || 0) >= publishLimit) {
-      const resetMsg = userPlan?.current_period_end
-        ? ` It resets on ${new Date(userPlan.current_period_end).toLocaleDateString()}.`
-        : ''
-      return NextResponse.json(
-        { error: `You've used all ${publishLimit} of your WordPress publishes for this period.${resetMsg}` },
-        { status: 403 }
-      )
-    }
-
     const { siteUrl, username, appPassword, title, contentHtml, excerpt, status, brandId } = await request.json()
 
     if (!siteUrl || !username || !appPassword || !title || !contentHtml) {
       return NextResponse.json({ error: 'siteUrl, username, appPassword, title and content are required' }, { status: 400 })
+    }
+
+    const postStatus = status === 'publish' ? 'publish' : 'draft'
+
+    // The quota applies to LIVE publishes only — saving a draft to your own
+    // site never consumes a credit and stays available even at the limit.
+    if (postStatus === 'publish') {
+      const periodStart = periodStartFor(userPlan)
+      const { count: usedCount } = await supabase
+        .from('wordpress_publishes')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('status', 'publish')
+        .gte('published_at', periodStart.toISOString())
+
+      if ((usedCount || 0) >= publishLimit) {
+        const resetMsg = userPlan?.current_period_end
+          ? ` It resets on ${new Date(userPlan.current_period_end).toLocaleDateString()}.`
+          : ''
+        return NextResponse.json(
+          { error: `You've used all ${publishLimit} of your live WordPress publishes for this period.${resetMsg} You can still save drafts.` },
+          { status: 403 }
+        )
+      }
     }
 
     // Normalize the site URL → https, no trailing slash.
@@ -73,8 +79,6 @@ export async function POST(request: NextRequest) {
     // Application passwords are sent as Basic auth. WP allows spaces in the
     // generated password; strip them as WP itself does.
     const token = Buffer.from(`${username}:${String(appPassword).replace(/\s+/g, '')}`).toString('base64')
-
-    const postStatus = status === 'publish' ? 'publish' : 'draft'
 
     let wpRes: Response
     try {

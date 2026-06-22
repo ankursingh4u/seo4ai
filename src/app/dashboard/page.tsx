@@ -426,10 +426,6 @@ function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesR
       window.location.href = '/dashboard/billing'
       return
     }
-    if (!quotaLeft) {
-      toast.error(`You've used all ${publishLimit} of your publishes this period${resetLabel ? ` — resets ${resetLabel}` : ''}`)
-      return
-    }
     if (!brandId) {
       toast.error('Add a brand first')
       return
@@ -522,15 +518,15 @@ function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesR
             />
             <Button
               onClick={generate}
-              disabled={generating || (canUse && !quotaLeft)}
-              className={`h-9 text-sm px-6 ${canUse && quotaLeft ? 'bg-violet-700 hover:bg-violet-800' : 'bg-stone-200 hover:bg-stone-300 text-stone-700'}`}
+              disabled={generating}
+              className={`h-9 text-sm px-6 ${canUse ? 'bg-violet-700 hover:bg-violet-800' : 'bg-stone-200 hover:bg-stone-300 text-stone-700'}`}
             >
               {generating ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" /> : <FileText className="h-3.5 w-3.5 mr-2" />}
-              {generating ? 'Writing...' : !canUse ? 'Upgrade to Generate' : !quotaLeft ? 'Publish limit reached' : 'Generate Article'}
+              {generating ? 'Writing...' : !canUse ? 'Upgrade to Generate' : 'Generate Article'}
             </Button>
             {canUse && !quotaLeft && (
               <p className="text-[11px] text-stone-500">
-                You&apos;ve used all {publishLimit} of your WordPress publishes for this period{resetLabel ? ` — resets ${resetLabel}` : ''}.
+                You&apos;ve used all {publishLimit} live publishes this period{resetLabel ? ` — resets ${resetLabel}` : ''}. You can still save drafts.
               </p>
             )}
           </div>
@@ -585,6 +581,11 @@ function PublishSection({ brandId, plan, publishLimit, publishesUsed, publishesR
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="accent-violet-700 h-3 w-3" />
                   Remember on this device (stored only in your browser, never on our servers)
                 </label>
+                {!quotaLeft && (
+                  <p className="text-[10px] text-amber-600">
+                    Live-publish limit reached for this period{resetLabel ? ` (resets ${resetLabel})` : ''} — &ldquo;Save as draft&rdquo; still works.
+                  </p>
+                )}
                 <div className="flex items-center gap-2 pt-1">
                   <select
                     value={status}

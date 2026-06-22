@@ -3,13 +3,6 @@ import { getOpenAI } from '@/lib/openai'
 import { PLANS } from '@/lib/payment'
 import { NextRequest, NextResponse } from 'next/server'
 
-function periodStartFor(userPlan: { current_period_start?: string | null } | null): Date {
-  if (userPlan?.current_period_start) return new Date(userPlan.current_period_start)
-  const d = new Date()
-  d.setDate(d.getDate() - 30)
-  return d
-}
-
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
@@ -35,25 +28,6 @@ export async function POST(request: NextRequest) {
     const publishLimit = PLANS[plan]?.publishLimit ?? 0
     if (publishLimit <= 0) {
       return NextResponse.json({ error: 'Upgrade to Pro or Max to generate & publish articles.' }, { status: 403 })
-    }
-
-    // Don't let them write an article they can't publish — block once the
-    // period's publish quota is already used up.
-    const periodStart = periodStartFor(userPlan)
-    const { count: usedCount } = await supabase
-      .from('wordpress_publishes')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .gte('published_at', periodStart.toISOString())
-
-    if ((usedCount || 0) >= publishLimit) {
-      const resetMsg = userPlan?.current_period_end
-        ? ` It resets on ${new Date(userPlan.current_period_end).toLocaleDateString()}.`
-        : ''
-      return NextResponse.json(
-        { error: `You've used all ${publishLimit} of your WordPress publishes for this period.${resetMsg}` },
-        { status: 403 }
-      )
     }
 
     const { brandId, topic } = await request.json()

@@ -48,6 +48,7 @@ export async function GET() {
       .from('wordpress_publishes')
       .select('id', { count: 'exact', head: true })
       .eq('user_id', user.id)
+      .eq('status', 'publish')
       .gte('published_at', periodStart.toISOString())
     const publishesUsed = publishCount || 0
     const publishLimit = planConfig.publishLimit ?? 0
