@@ -499,12 +499,12 @@ export default function LandingPage() {
               {
                 name: 'Pro', price: '$24.99', suffix: '/mo', engines: 'ChatGPT + Gemini',
                 highlight: true, badge: 'Most popular',
-                features: ['3 brands', '15 scans / month', 'ChatGPT + Gemini engines', 'Competitor gap analysis', 'Off-site opportunity finder', 'Write & publish to WordPress (1 / month)', 'Progress history'],
+                features: ['3 brands', '15 scans / month', 'ChatGPT + Gemini engines', 'Competitor gap analysis', 'Off-site opportunity finder', 'Write 5 AI SEO articles / mo · publish 1 live to WordPress', 'Progress history'],
               },
               {
                 name: 'Max', price: '$49.99', suffix: '/mo', engines: 'ChatGPT + Gemini + Claude',
                 highlight: false, badge: 'Full power',
-                features: ['10 brands', '60 scans / month', 'ChatGPT + Gemini + Claude engines', 'Write & 1-click publish to WordPress (3 / month)', 'Fix plan + outreach drafts', 'Priority support'],
+                features: ['10 brands', '60 scans / month', 'ChatGPT + Gemini + Claude engines', 'Write 20 AI SEO articles / mo · publish 3 live to WordPress', 'Fix plan + outreach drafts', 'Priority support'],
               },
             ].map((p) => (
               <div
